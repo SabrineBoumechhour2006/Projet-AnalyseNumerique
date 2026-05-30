@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NumAnalyse — USTHB 3INGSoft</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Variables ─────────────────────────────────────── */
+    :root {
+      --bg:        #F7F6F2;
+      --surface:   #FFFFFF;
+      --surface2:  #F0EEE8;
+      --border:    #E2DFD6;
+      --border2:   #CCC9BE;
+      --text:      #1A1916;
+      --muted:     #7A7870;
+      --accent:    #2D6A4F;
+      --accent-lt: #D8EDE3;
+      --accent2:   #B7935A;
+      --accent2-lt:#F5ECD9;
+      --blue:      #2B5BA8;
+      --blue-lt:   #DDE8F7;
+      --r:         10px;
+      --r-lg:      16px;
+      --font:      'DM Sans', sans-serif;
+      --mono:      'DM Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Pages ─────────────────────────────────────────── */
+    .page { display: none; animation: fadein 0.25s ease; }
+    .page.active { display: block; }
+    @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* ── Navbar ────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 500; color: var(--text);
+      text-decoration: none;
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .nav-tag {
+      font-size: 11px; color: var(--muted);
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 2px 10px; border-radius: 20px;
+    }
+    .nav-btn {
+      padding: 7px 18px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--r);
+      font-family: var(--font); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: background .15s;
+    }
+    .nav-btn:hover { background: #235940; }
+    .nav-back {
+      padding: 7px 16px;
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); border-radius: var(--r);
+      font-family: var(--font); font-size: 13px;
+      cursor: pointer; transition: all .15s;
+    }
+    .nav-back:hover { background: var(--surface2); color: var(--text); }
+
+    /* ══════════════════════════════════════════════════════
+       PAGE ACCUEIL
+    ══════════════════════════════════════════════════════ */
+    .hero {
+      max-width: 680px; margin: 0 auto;
+      padding: 72px 32px 48px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-family: var(--mono);
+      color: var(--accent); background: var(--accent-lt);
+      padding: 5px 14px; border-radius: 20px;
+      margin-bottom: 28px; letter-spacing: 0.02em;
+    }
+    .hero h1 {
+      font-size: 42px; font-weight: 300; line-height: 1.15;
+      color: var(--text); margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em {
+      font-style: normal; font-weight: 500; color: var(--accent);
+    }
+    .hero-desc {
+      font-size: 16px; color: var(--muted);
+      max-width: 420px; margin: 0 auto 36px;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 32px;
+      background: var(--text); color: #fff;
+      border: none; border-radius: var(--r);
+      font-family: var(--font); font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: background .15s;
+    }
+    .hero-cta:hover { background: #2e2d2a; }
+    .hero-cta-arrow { font-size: 18px; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; max-width: 640px; margin: 56px auto 0;
+    }
+    .stat-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 16px; text-align: center;
+    }
+    .stat-pill .sv {
+      font-size: 24px; font-weight: 500; color: var(--text);
+      font-family: var(--mono);
+    }
+    .stat-pill .sl {
+      font-size: 11px; color: var(--muted); margin-top: 4px;
+    }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 840px; margin: 48px auto 0;
+      padding: 0 32px;
+    }
+    .feat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px;
+      transition: box-shadow .15s;
+    }
+    .feat:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .feat-icon {
+      width: 38px; height: 38px; border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 14px;
+    }
+    .feat h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .feat p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    .footer-home {
+      text-align: center; padding: 48px 32px 32px;
+      font-size: 12px; color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       PAGE PRINCIPALE (MENU)
+    ══════════════════════════════════════════════════════ */
+    .main-wrap { max-width: 820px; margin: 0 auto; padding: 36px 32px 48px; }
+    .main-wrap > h2 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+    .main-wrap > p { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+    .axe-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); margin-bottom: 20px; overflow: hidden;
+    }
+    .axe-head {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+    }
+    .axe-num {
+      width: 40px; height: 40px; border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 13px; font-weight: 500;
+      flex-shrink: 0;
+    }
+    .axe-num.a1 { background: var(--accent-lt); color: var(--accent); }
+    .axe-num.a2 { background: var(--blue-lt);   color: var(--blue);   }
+    .axe-num.a3 { background: var(--accent2-lt); color: var(--accent2);}
+
+    .axe-info h3 { font-size: 15px; font-weight: 500; }
+    .axe-info p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .axe-body {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--border);
+    }
+    .algo-btn {
+      background: var(--surface); padding: 16px 20px;
+      border: none; text-align: left; cursor: pointer;
+      transition: background .12s; font-family: var(--font);
+    }
+    .algo-btn:hover { background: var(--surface2); }
+    .algo-btn-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .algo-btn-type {
+      font-size: 11px; color: var(--muted);
+      font-family: var(--mono); margin-top: 4px;
+    }
+    .algo-btn-arrow {
+      float: right; color: var(--border2);
+      font-size: 16px; margin-top: 2px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       PAGE ALGORITHME
+    ══════════════════════════════════════════════════════ */
+    .algo-wrap { max-width: 760px; margin: 0 auto; padding: 36px 32px 56px; }
+    .algo-breadcrumb {
+      font-size: 12px; color: var(--muted);
+      font-family: var(--mono); margin-bottom: 16px;
+    }
+    .algo-wrap h2 { font-size: 24px; font-weight: 500; margin-bottom: 8px; }
+    .algo-desc-text { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+    .section-label {
+      font-size: 11px; font-family: var(--mono);
+      color: var(--muted); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+
+    .input-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px; margin-bottom: 20px;
+    }
+    .input-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px; align-items: end;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; color: var(--muted); }
+    .field input {
+      padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: var(--r);
+      background: var(--bg); color: var(--text);
+      font-family: var(--mono); font-size: 13px;
+      outline: none; transition: border-color .15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
+    .field input.input-error { border-color: #c0392b !important; background: #fff5f5; }
+    .field-error-msg {
+      font-size: 11px; color: #c0392b;
+      margin-top: 4px; display: none;
+    }
+    .field-error-msg.visible { display: block; }
+    .input-error-banner {
+      display: none; margin-top: 12px;
+      padding: 10px 14px;
+      background: #fff5f5; border: 1px solid #f5c6c6;
+      border-left: 3px solid #c0392b;
+      border-radius: 0 var(--r) var(--r) 0;
+      font-size: 13px; color: #c0392b;
+    }
+    .input-error-banner.visible { display: block; }
+
+    .run-btn {
+      padding: 10px 22px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--r);
+      font-family: var(--font); font-size: 14px; font-weight: 500;
+      cursor: pointer; white-space: nowrap; transition: background .15s;
+      height: 42px;
+    }
+    .run-btn:hover { background: #235940; }
+
+    .result-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); overflow: hidden; margin-bottom: 20px;
+      display: none;
+    }
+    .result-card.visible { display: block; animation: fadein .2s ease; }
+
+    .result-tabs {
+      display: flex; border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .rtab {
+      padding: 11px 20px; font-size: 13px; color: var(--muted);
+      cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all .15s;
+    }
+    .rtab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface); }
+
+    .result-body { padding: 22px; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .metric {
+      background: var(--surface2); border-radius: var(--r);
+      padding: 14px 16px;
+    }
+    .metric .mv { font-size: 20px; font-weight: 500; font-family: var(--mono); }
+    .metric .ml { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .metric.good .mv { color: var(--accent); }
+    .metric.info .mv { color: var(--blue); }
+
+    .graph-zone {
+      background: var(--bg); border: 1px dashed var(--border2);
+      border-radius: var(--r); height: 180px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+    }
+    .graph-zone svg { opacity: 0.5; }
+    .graph-zone p { font-size: 12px; color: var(--muted); text-align: center; }
+
+    .recommend-box {
+      margin-top: 18px; padding: 14px 18px;
+      background: var(--accent-lt);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--r) var(--r) 0;
+    }
+    .recommend-box p { font-size: 13px; color: #1a3d2b; line-height: 1.6; }
+    .recommend-box strong { color: var(--accent); }
+
+    .iter-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px; font-family: var(--mono);
+    }
+    .iter-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 11px; color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font); letter-spacing: 0.04em;
+    }
+    .iter-table td {
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .iter-table tr:last-child td { border-bottom: none; }
+    .iter-table tr:hover td { background: var(--surface2); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ══════════════════════════════════════════════════════
+       MATRICE INPUT (méthodes directes)
+    ══════════════════════════════════════════════════════ */
+    .matrix-setup {
+      display: flex; align-items: flex-end; gap: 12px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .matrix-setup .field { min-width: 120px; }
+    .matrix-setup .field input { width: 80px; text-align: center; }
+    .gen-btn {
+      padding: 10px 20px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: var(--r);
+      font-family: var(--font); font-size: 13px; font-weight: 500;
+      cursor: pointer; height: 42px; white-space: nowrap;
+      transition: background .15s;
+    }
+    .gen-btn:hover { background: #1e4280; }
+
+    .matrix-input-area {
+      display: none;
+      animation: fadein .2s ease;
+    }
+    .matrix-input-area.visible { display: block; }
+
+    .matrix-row-label {
+      font-size: 11px; font-family: var(--mono);
+      color: var(--muted); letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+
+    .matrix-grid-wrap {
+      display: flex; align-items: flex-start; gap: 18px;
+      flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .matrix-block { display: flex; flex-direction: column; gap: 4px; }
+    .matrix-block-label {
+      font-size: 11px; font-family: var(--mono);
+      color: var(--muted); text-align: center;
+      margin-bottom: 4px;
+    }
+    .matrix-grid {
+      display: grid;
+      gap: 4px;
+    }
+    .matrix-grid input {
+      width: 60px; height: 38px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--bg); color: var(--text);
+      font-family: var(--mono); font-size: 13px;
+      text-align: center; outline: none;
+      transition: border-color .15s;
+    }
+    .matrix-grid input:focus { border-color: var(--accent); background: #fff; }
+    .matrix-equals {
+      font-size: 22px; color: var(--muted);
+      align-self: center; padding-top: 20px;
+    }
+    .vec-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .vec-grid input {
+      width: 60px; height: 38px;
+      border: 1px solid var(--border2); border-radius: 6px;
+      background: var(--accent-lt); color: var(--text);
+      font-family: var(--mono); font-size: 13px;
+      text-align: center; outline: none;
+      transition: border-color .15s;
+    }
+    .vec-grid input:focus { border-color: var(--accent); }
+
+    /* ── Résultats méthodes directes ── */
+    .direct-results {
+      display: none; animation: fadein .2s ease;
+    }
+    .direct-results.visible { display: block; }
+
+    .method-result-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 16px;
+    }
+    .method-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 16px; overflow: hidden;
+    }
+    .method-card.best { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-lt); }
+    .method-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .method-card-name { font-size: 14px; font-weight: 500; }
+    .method-badge {
+      font-size: 10px; font-family: var(--mono);
+      padding: 2px 8px; border-radius: 20px;
+    }
+    .badge-ok   { background: var(--accent-lt); color: var(--accent); }
+    .badge-na   { background: var(--surface2);  color: var(--muted);  }
+    .badge-best { background: var(--accent);     color: #fff;          }
+    .badge-err  { background: #fde8e8;           color: #c0392b;       }
+
+    .method-solution {
+      font-family: var(--mono); font-size: 12px;
+      color: var(--text); background: var(--bg);
+      border-radius: 6px; padding: 8px 10px;
+      margin-bottom: 8px; line-height: 1.8;
+      max-height: 110px; overflow-y: auto;
+      word-break: break-all;
+    }
+    .method-stats {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .mstat {
+      font-size: 11px; font-family: var(--mono);
+      background: var(--surface2); border-radius: 4px;
+      padding: 3px 8px; color: var(--muted);
+    }
+    .mstat span { color: var(--text); font-weight: 500; }
+
+    .winner-banner {
+      background: var(--accent-lt); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 12px 16px; font-size: 13px; color: #1a3d2b;
+      margin-top: 4px;
+    }
+    .winner-banner strong { color: var(--accent); }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 700px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .axe-body { grid-template-columns: 1fr; }
+      .input-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 28px; }
+      #nl-input-card > div:first-child { grid-template-columns: 1fr 1fr !important; }
+    }
+    @media (max-width: 480px) {
+      #nl-input-card > div:first-child { grid-template-columns: 1fr !important; }
+    }
+
+    /* Prevent any grid/card from overflowing its container */
+    .input-card, .algo-wrap, .main-wrap { overflow: visible; }
+    .input-card > div[style*="grid"] { min-width: 0; }
+    .field input, .field select { width: 100%; min-width: 0; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     PAGE ACCUEIL
+══════════════════════════════════════════════ -->
+<div id="p-home" class="page active">
+  <nav class="nav">
+    <a class="nav-logo" href="#">
+      <div class="nav-dot"></div>
+      NumAnalyse
+    </a>
+    <span class="nav-tag">USTHB · 3INGSoft</span>
+    <button class="nav-btn" onclick="goTo('p-main')">Lancer l'application</button>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge">Projet Analyse Numérique</div>
+    <h1>Algorithmes numériques<br><em>au bout des doigts</em></h1>
+    <p class="hero-desc">
+      Appliquez les méthodes étudiées en cours directement depuis l'interface,
+      sans calculs manuels, avec visualisations intégrées.
+    </p>
+    <button class="hero-cta" onclick="goTo('p-main')">
+      Accéder au menu
+      <span class="hero-cta-arrow">→</span>
+    </button>
+
+    <div class="stats-row">
+      <div class="stat-pill"><div class="sv">4</div><div class="sl">Axes thématiques</div></div>
+      <div class="stat-pill"><div class="sv">10+</div><div class="sl">Algorithmes</div></div>
+      <div class="stat-pill"><div class="sv">100%</div><div class="sl">Visualisé</div></div>
+      <div class="stat-pill"><div class="sv">Py</div><div class="sl">Langage</div></div>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon" style="background:var(--accent-lt);">∿</div>
+      <h3>Fonctions non linéaires</h3>
+      <p>Dichotmie, Newton-Raphson, sécante — avec dérivées et vérification de continuité.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:var(--blue-lt);">⊞</div>
+      <h3>Systèmes linéaires</h3>
+      <p>Méthodes directes (Gauss, LU, Cholesky) et itératives (Jacobi, Gauss-Seidel) avec normes matricielles.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:var(--accent2-lt);">◌</div>
+      <h3>Interpolation &amp; approximation</h3>
+      <p>Lagrange, Newton et moindres carrés codés manuellement.</p>
+    </div>
+  </div>
+
+  <div class="footer-home">
+      Bibliothèques : numpy, scipy, matplotlib
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE MENU PRINCIPAL
+══════════════════════════════════════════════ -->
+<div id="p-main" class="page">
+  <nav class="nav">
+    <a class="nav-logo" href="#"><div class="nav-dot"></div>NumAnalyse</a>
+    <button class="nav-back" onclick="goTo('p-home')">← Accueil</button>
+  </nav>
+
+  <div class="main-wrap">
+    <h2>Menu principal</h2>
+    <p>Sélectionnez un axe puis un algorithme pour commencer.</p>
+
+    <!-- Axe 1 -->
+    <div class="axe-card">
+      <div class="axe-head">
+        <div class="axe-num a1">A1</div>
+        <div class="axe-info">
+          <h3>Résolution des fonctions non linéaires</h3>
+          <p>Dérivées symboliques, continuité, recherche de racines</p>
+        </div>
+      </div>
+      <div class="axe-body">
+        <button class="algo-btn" onclick="goAlgo('Dichotmie','A1','Encadrement itératif du zéro par dichotomie sur [a, b].','nl')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Dichotmie</div>
+          <div class="algo-btn-type">méthode directe · convergence linéaire</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Newton-Raphson','A1','Convergence quadratique basée sur f(x) et f\'(x). Nécessite une dérivée.','nl')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Newton-Raphson</div>
+          <div class="algo-btn-type">dérivée requise · convergence quadratique</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Point fixe','A1','Réécriture f(x)=0 sous x = g(x), itération jusqu\'à convergence.','nl')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Point fixe</div>
+          <div class="algo-btn-type">itérative · conditionnellement convergente</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoRecommandation()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Recommandation</div>
+          <div class="algo-btn-type">quel algorithme choisir ? · aide au choix</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoAnalyse()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Analyse de la fonction</div>
+          <div class="algo-btn-type">dérivées · continuité · TVI · graphe</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoComparaisonNL()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Comparaison des méthodes</div>
+          <div class="algo-btn-type">Dichotmie · Newton · Point fixe · sur f(x)</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Axe 2 -->
+    <div class="axe-card">
+      <div class="axe-head">
+        <div class="axe-num a2">A2</div>
+        <div class="axe-info">
+          <h3>Résolution des systèmes linéaires</h3>
+          <p>Méthodes directes et itératives, normes, conditionnement</p>
+        </div>
+      </div>
+      <div class="axe-body">
+        <button class="algo-btn" onclick="goAlgo('Élimination de Gauss','A2','Triangularisation de la matrice augmentée [A|b] avec substitution arrière.','directe')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Élimination de Gauss</div>
+          <div class="algo-btn-type">directe · pivot partiel</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Factorisation LU','A2','Décomposition A = L × U puis résolution de deux systèmes triangulaires.','directe')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Factorisation LU</div>
+          <div class="algo-btn-type">directe · réutilisable pour plusieurs b</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Cholesky','A2','Décomposition A = L × Lᵀ pour matrices symétriques définies positives.','directe')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Factorisation de Cholesky</div>
+          <div class="algo-btn-type">directe · symétrique définie positive</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoDirectComparaison()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Comparer Gauss / LU / Cholesky</div>
+          <div class="algo-btn-type">comparaison · temps + résidu</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Jacobi','A2','Itération simultanée sur toutes les composantes x_i à partir de l\'itération k.','iterative')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Jacobi</div>
+          <div class="algo-btn-type">itérative · convergence conditionnelle</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Gauss-Seidel','A2','Utilise immédiatement les valeurs x_i(k+1) dès qu\'elles sont disponibles.','iterative')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Gauss-Seidel</div>
+          <div class="algo-btn-type">itérative · plus rapide que Jacobi</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoIterComparaison()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Comparer Jacobi / Gauss-Seidel</div>
+          <div class="algo-btn-type">comparaison · vitesse + résidu + graphe</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgoAutreOption()">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Autres options (Normes &amp; det)</div>
+          <div class="algo-btn-type">norme-1 · norme-∞ · det(A) · κ(A)</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Axe 3 -->
+    <div class="axe-card">
+      <div class="axe-head">
+        <div class="axe-num a3">A3</div>
+        <div class="axe-info">
+          <h3>Interpolation et approximation</h3>
+          <p>Polynômes interpolants et moindres carrés</p>
+        </div>
+      </div>
+      <div class="axe-body">
+        <button class="algo-btn" onclick="goAlgo('Interpolation de Lagrange','A3','Polynôme de degré n-1 passant exactement par les n points donnés.','interpolation')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Interpolation de Lagrange</div>
+          <div class="algo-btn-type">interpolation · passant par tous les points</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Interpolation de Newton','A3','Table des différences divisées, ajout de points sans recalcul complet.','interpolation')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Interpolation de Newton</div>
+          <div class="algo-btn-type">interpolation · différences divisées</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Moindres carrés','A3','Minimise J = Σ(yi - f(xi))² via le système normal A^T A θ = A^T y.','approximation')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Moindres carrés</div>
+          <div class="algo-btn-type">approximation · système normal</div>
+        </button>
+                        <button class="algo-btn" onclick="goAlgo('Comparaison Lagrange / Newton','A3','Compare les deux formes du meme polynome interpolateur : ecart numerique, courbes et differences divisees.','axe3')">
+          <span class="algo-btn-arrow">?</span>
+          <div class="algo-btn-name">Comparaison Lagrange / Newton</div>
+          <div class="algo-btn-type">meme polynome ? formes differentes</div>
+        </button>
+<button class="algo-btn" onclick="goAlgo('Comparaison interpolation / approximation','A3','Compare sur le meme nuage de points le polynome interpolateur et le polynome des moindres carres.','axe3')">
+          <span class="algo-btn-arrow">?</span>
+          <div class="algo-btn-name">Comparaison interpolation / approximation</div>
+          <div class="algo-btn-type">meme nuage ? exactitude vs tendance</div>
+        </button>
+        <button class="algo-btn" onclick="goAlgo('Descente de gradient','A3','Minimisation itérative de J(a,b) — problème d\'optimisation, sans polyfit.','optimisation')">
+          <span class="algo-btn-arrow">›</span>
+          <div class="algo-btn-name">Descente de gradient</div>
+          <div class="algo-btn-type">optimisation · fonction de coût J(θ)</div>
+        </button>
+</div>
+    </div>
+    <div class="axe-card">
+      <div class="axe-head">
+        <div class="axe-num a3">A4</div>
+        <div class="axe-info">
+          <h3>Conclusion generale</h3>
+          <p>Synthese et differences entre les familles d'algorithmes</p>
+        </div>
+      </div>
+      <div class="axe-body">
+        <button class="algo-btn" onclick="goAlgo('Conclusion generale','A4','Synthèse des objectifs, entrées, limites et différences entre les algorithmes du projet.','conclusion')" 
+            style="grid-column: span 2; padding: 20px 22px; min-height: 78px;">
+          <span class="algo-btn-arrow">?</span>
+          <div class="algo-btn-name">Conclusion generale</div>
+          <div class="algo-btn-type">choisir la bonne methode</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE ALGORITHME
+══════════════════════════════════════════════ -->
+<div id="p-algo" class="page">
+  <nav class="nav">
+    <a class="nav-logo" href="#"><div class="nav-dot"></div>NumAnalyse</a>
+    <button class="nav-back" onclick="goTo('p-main')">← Menu</button>
+  </nav>
+
+  <div class="algo-wrap">
+    <div class="algo-breadcrumb" id="algo-breadcrumb">Menu › —</div>
+    <h2 id="algo-title">—</h2>
+    <p class="algo-desc-text" id="algo-desc">—</p>
+
+    <!-- Saisie standard (fonctions non linéaires, interpolation) -->
+    <div class="section-label" id="input-section-label">Paramètres d'entrée</div>
+    <div class="input-card" id="std-input-card">
+      <div class="input-grid">
+        <div class="field">
+          <label>Fonction f(x)</label>
+          <input type="text" id="inp-fx" placeholder="ex : x**3 - x - 2" />
+        </div>
+        <div class="field">
+          <label>Intervalle [a, b]</label>
+          <input type="text" id="inp-ab" placeholder="ex : 1  3" />
+        </div>
+        <div class="field">
+          <label>Tolérance ε</label>
+          <input type="text" id="inp-eps" placeholder="ex : 1e-4" />
+        </div>
+        <button class="run-btn" onclick="runAlgo()">Exécuter</button>
+      </div>
+    </div>
+
+    <!-- Saisie matricielle (méthodes directes) -->
+    <div class="input-card" id="matrix-input-card" style="display:none;">
+      <!-- Étape 1 : taille -->
+      <div class="matrix-setup">
+        <div class="field">
+          <label>Taille de la matrice n</label>
+          <input type="number" id="inp-n" min="2" max="10" value="3" placeholder="3" />
+        </div>
+        <button class="gen-btn" onclick="genererMatrice()">Générer la grille →</button>
+      </div>
+      <!-- Étape 2 : grille -->
+      <div class="matrix-input-area" id="matrix-input-area">
+        <div class="matrix-row-label">Entrez la matrice A et le vecteur b</div>
+        <div class="matrix-grid-wrap">
+          <div class="matrix-block">
+            <div class="matrix-block-label">A</div>
+            <div class="matrix-grid" id="matrix-grid-A"></div>
+          </div>
+          <div class="matrix-equals">·x =</div>
+          <div class="matrix-block">
+            <div class="matrix-block-label">b</div>
+            <div class="vec-grid" id="vec-grid-b"></div>
+          </div>
+        </div>
+        <button class="run-btn" id="run-direct-btn" onclick="runDirect()">Résoudre</button>
+      </div>
+    </div>
+
+    <!-- Saisie matricielle méthodes itératives (Jacobi / GS / Comparaison) -->
+    <div class="input-card" id="iter-input-card" style="display:none;">
+      <div class="matrix-setup">
+        <div class="field">
+          <label>Taille de la matrice n</label>
+          <input type="number" id="inp-n-iter" min="2" max="10" value="3" placeholder="3" />
+        </div>
+        <div class="field">
+          <label>Tolérance ε</label>
+          <input type="text" id="inp-tol-iter" value="1e-4" placeholder="1e-4" style="width:100px;" />
+        </div>
+        <button class="gen-btn" onclick="genererMatriceIter()">Générer la grille →</button>
+      </div>
+      <div class="matrix-input-area" id="matrix-input-area-iter">
+        <div class="matrix-row-label">Entrez la matrice A et le vecteur b</div>
+        <div class="matrix-grid-wrap">
+          <div class="matrix-block">
+            <div class="matrix-block-label">A</div>
+            <div class="matrix-grid" id="matrix-grid-A-iter"></div>
+          </div>
+          <div class="matrix-equals">·x =</div>
+          <div class="matrix-block">
+            <div class="matrix-block-label">b</div>
+            <div class="vec-grid" id="vec-grid-b-iter"></div>
+          </div>
+        </div>
+        <button class="run-btn" id="run-iter-btn" onclick="runIter()">Résoudre</button>
+      </div>
+    </div>
+
+    <!-- Saisie pour Autre Option (normes / det) -->
+    <div class="input-card" id="autre-input-card" style="display:none;">
+      <div class="matrix-setup">
+        <div class="field">
+          <label>Taille de la matrice n</label>
+          <input type="number" id="inp-n-autre" min="2" max="10" value="3" placeholder="3" />
+        </div>
+        <button class="gen-btn" onclick="genererMatriceAutre()">Générer la grille →</button>
+      </div>
+      <div class="matrix-input-area" id="matrix-input-area-autre">
+        <div class="matrix-row-label">Entrez la matrice A (carrée)</div>
+        <div class="matrix-grid-wrap">
+          <div class="matrix-block">
+            <div class="matrix-block-label">A</div>
+            <div class="matrix-grid" id="matrix-grid-A-autre"></div>
+          </div>
+        </div>
+        <button class="run-btn" onclick="runAutreOption()">Analyser</button>
+      </div>
+    </div>
+
+    <!-- ══ Saisie NL commune (Bisection / Newton / Point fixe / Comparaison) ══ -->
+    <div class="input-card" id="nl-input-card" style="display:none;">
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:12px; align-items:start;">
+        <div class="field">
+          <label>Fonction f(x)</label>
+          <input type="text" id="nl-fx" placeholder="ex : x**3 - x - 2" oninput="clearInputError('nl-fx','nl-fx-err')" />
+          <span class="field-error-msg" id="nl-fx-err"></span>
+        </div>
+        <div class="field">
+          <label>a</label>
+          <input type="text" id="nl-a" placeholder="1" oninput="clearInputError('nl-a','nl-a-err')" />
+          <span class="field-error-msg" id="nl-a-err"></span>
+        </div>
+        <div class="field">
+          <label>b</label>
+          <input type="text" id="nl-b" placeholder="3" oninput="clearInputError('nl-b','nl-b-err')" />
+          <span class="field-error-msg" id="nl-b-err"></span>
+        </div>
+        <div class="field">
+          <label>Tolérance ε</label>
+          <input type="text" id="nl-eps" value="1e-4" placeholder="1e-4" oninput="clearInputError('nl-eps','nl-eps-err')" />
+          <span class="field-error-msg" id="nl-eps-err"></span>
+        </div>
+      </div>
+      <!-- Champs supplémentaires selon méthode -->
+      <div id="nl-extra" style="margin-top:12px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;"></div>
+      <div class="input-error-banner" id="nl-error-banner"></div>
+      <div style="margin-top:14px; display:flex; gap:10px; align-items:center;">
+        <button class="run-btn" onclick="runNL()">Exécuter</button>
+        <span id="nl-status" style="font-size:12px; color:var(--muted);"></span>
+      </div>
+    </div>
+
+    <!-- ══ Saisie Recommandation ══ -->
+    <div class="input-card" id="reco-input-card" style="display:none;">
+      <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">
+        Répondez aux questions pour obtenir la recommandation de méthode adaptée à votre problème.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="field">
+          <label>La fonction f(x) est-elle dérivable analytiquement ?</label>
+          <select id="reco-derivable" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+            <option value="difficile">Difficile / incertaine</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Disposez-vous d'un intervalle [a, b] avec changement de signe ?</label>
+          <select id="reco-intervalle" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>La précision souhaitée est…</label>
+          <select id="reco-precision" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;">
+            <option value="haute">Très haute (< 1e-8)</option>
+            <option value="moyenne">Moyenne (1e-4 à 1e-6)</option>
+            <option value="faible">Faible (> 1e-4)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Pouvez-vous réécrire f(x)=0 sous forme x = g(x) contractante ?</label>
+          <select id="reco-gx" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+            <option value="nsp">Je ne sais pas</option>
+          </select>
+        </div>
+        <button class="run-btn" onclick="runRecommandation()">Obtenir la recommandation →</button>
+      </div>
+    </div>
+
+    <!-- ══ Saisie Analyse de la fonction ══ -->
+    <div class="input-card" id="analyse-input-card" style="display:none;">
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; align-items:end;">
+        <div class="field">
+          <label>Fonction f(x)</label>
+          <input type="text" id="ana-fx" placeholder="ex : x**3 - x - 2" />
+        </div>
+        <div class="field">
+          <label>a</label>
+          <input type="number" id="ana-a" step="any" placeholder="0" />
+        </div>
+        <div class="field">
+          <label>b</label>
+          <input type="number" id="ana-b" step="any" placeholder="3" />
+        </div>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="run-btn" onclick="runAnalyse()">Analyser</button>
+      </div>
+    </div>
+
+    <!-- Saisie Axe 3 -->
+    <div class="input-card" id="axe3-input-card" style="display:none;">
+      <div class="input-grid" style="grid-template-columns:150px 1fr 1fr 120px auto;">
+        <div class="field a3-approx-mode-field" style="display:none;"><label>Cas</label><select id="a3-approx-mode" onchange="updateA3ApproxMode()" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;"><option value="discrete">Discret</option><option value="continuous">Continu</option><option value="comparison">Comparaison</option></select></div>
+        <div class="field a3-points-field"><label>Valeurs X</label><input type="text" id="a3-x" value="0,1,2,3,4" /></div>
+        <div class="field a3-points-field"><label>Valeurs Y</label><input type="text" id="a3-y" value="1,2,2.8,3.6,5.1" /></div>
+        <div class="field a3-cont-field" style="display:none;"><label>f(x)</label><input type="text" id="a3-f-approx" value="x^2+sin(x)" /></div>
+        <div class="field a3-cont-field" style="display:none;"><label>Intervalle [a,b]</label><input type="text" id="a3-ab" value="0,2" /></div>
+        <div class="field"><label>Degre s</label><input type="number" id="a3-degree" value="1" min="0" /></div>
+        <button class="run-btn" onclick="runAxe3()">Executer</button>
+      </div>
+      <div id="a3-gradient-fields" style="display:none; margin-top:14px;" class="input-card">
+        <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:12px; align-items:end;">
+          <div class="field"><label>Type</label><select id="a3-grad-mode" onchange="updateA3GradientMode()" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r); background:var(--bg); font-family:var(--mono); font-size:13px;"><option value="1d">f(x)</option><option value="2d">f(x,y)</option></select></div>
+          <div class="field"><label>f</label><input type="text" id="a3-f" value="x^2+2*x+1" /></div>
+          <div class="field a3-1d"><label>f'(x)</label><input type="text" id="a3-df" value="2*x+2" /></div>
+          <div class="field a3-2d" style="display:none;"><label>df/dx</label><input type="text" id="a3-dfdx" value="2*x+y+1" /></div>
+          <div class="field a3-2d" style="display:none;"><label>df/dy</label><input type="text" id="a3-dfdy" value="4*y+x-1" /></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:12px; margin-top:12px;">
+          <div class="field"><label>x0</label><input type="number" id="a3-x0" value="5" step="any" /></div>
+          <div class="field a3-2d" style="display:none;"><label>y0</label><input type="number" id="a3-y0" value="3" step="any" /></div>
+          <div class="field"><label>alpha</label><input type="number" id="a3-alpha" value="0.1" step="any" /></div>
+          <div class="field"><label>eps</label><input type="text" id="a3-eps" value="1e-5" /></div>
+          <div class="field"><label>max iter</label><input type="number" id="a3-max-iter" value="300" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="direct-results" id="axe3-results">
+      <div class="section-label">Resultats</div>
+      <div id="axe3-result-content"></div>
+    </div>
+
+    <!-- Résultats standard -->
+    <div class="section-label">Résultats</div>
+    <div class="result-card" id="result-card">
+      <div class="result-tabs">
+        <div class="rtab active" onclick="switchTab(0)">Résultats</div>
+        <div class="rtab" onclick="switchTab(1)">Visualisation</div>
+        <div class="rtab" onclick="switchTab(2)">Tableau itérations</div>
+      </div>
+      <div class="result-body">
+
+        <!-- Onglet 0 : résultats -->
+        <div class="tab-panel active" id="tab-0">
+          <div class="metrics">
+            <div class="metric good">
+              <div class="mv" id="res-root">1.5214</div>
+              <div class="ml">Racine approchée</div>
+            </div>
+            <div class="metric info">
+              <div class="mv" id="res-iter">12</div>
+              <div class="ml">Itérations</div>
+            </div>
+            <div class="metric">
+              <div class="mv" id="res-err">8.3 × 10⁻⁵</div>
+              <div class="ml">Erreur finale</div>
+            </div>
+          </div>
+          <div class="recommend-box">
+            <p id="recommend-text">
+              <strong>Recommandation :</strong> Newton-Raphson converge plus vite
+              si f est dérivable et le point initial est proche de la racine.
+              Préférez la bisection si la fonction est difficile à dériver.
+            </p>
+          </div>
+        </div>
+
+        <!-- Onglet 1 : visualisation -->
+        <div class="tab-panel" id="tab-1">
+          <div class="graph-zone">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <polyline points="4,40 12,28 20,32 30,14 38,20 44,8"
+                stroke="#2D6A4F" stroke-width="2" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="4" y1="42" x2="44" y2="42" stroke="#CCC9BE" stroke-width="1.5"/>
+              <line x1="4" y1="6"  x2="4"  y2="42" stroke="#CCC9BE" stroke-width="1.5"/>
+            </svg>
+            <p>Le graphe matplotlib s'affiche ici lors de l'exécution Python<br>
+            <code style="font-family:var(--mono);font-size:11px;color:var(--muted)">plt.show()</code> est appelé automatiquement</p>
+          </div>
+        </div>
+
+        <!-- Onglet 2 : tableau itérations -->
+        <div class="tab-panel" id="tab-2">
+          <table class="iter-table">
+            <thead>
+              <tr>
+                <th>Itération</th>
+                <th>a</th>
+                <th>b</th>
+                <th>x_mid</th>
+                <th>f(x_mid)</th>
+                <th>Erreur</th>
+              </tr>
+            </thead>
+            <tbody id="iter-tbody">
+              <tr><td>1</td><td>1.0000</td><td>3.0000</td><td>2.0000</td><td>4.0000</td><td>1.0000</td></tr>
+              <tr><td>2</td><td>1.0000</td><td>2.0000</td><td>1.5000</td><td>-0.1250</td><td>0.5000</td></tr>
+              <tr><td>3</td><td>1.5000</td><td>2.0000</td><td>1.7500</td><td>1.6094</td><td>0.2500</td></tr>
+              <tr><td>4</td><td>1.5000</td><td>1.7500</td><td>1.6250</td><td>0.6660</td><td>0.1250</td></tr>
+              <tr><td>5</td><td>1.5000</td><td>1.6250</td><td>1.5625</td><td>0.2559</td><td>0.0625</td></tr>
+              <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+              <tr><td>12</td><td>1.5213</td><td>1.5215</td><td>1.5214</td><td>0.0000</td><td>8.3e-5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Résultats méthodes directes -->
+    <div class="direct-results" id="direct-results">
+      <div class="section-label">Résultats — méthodes directes</div>
+      <div class="method-result-grid" id="method-result-grid"></div>
+      <div class="winner-banner" id="winner-banner" style="display:none;"></div>
+    </div>
+
+    <!-- Résultats méthodes itératives -->
+    <div class="direct-results" id="iter-results">
+      <div class="section-label">Résultats — méthodes itératives</div>
+      <div class="method-result-grid" id="iter-result-grid"></div>
+      <div class="winner-banner" id="iter-winner-banner" style="display:none;"></div>
+      <!-- Tableau itérations -->
+      <div id="iter-table-wrap" style="display:none; margin-top:20px;">
+        <div class="section-label">Tableau des itérations</div>
+        <div style="overflow-x:auto;">
+          <table class="iter-table" id="iter-table-main">
+            <thead id="iter-table-head"></thead>
+            <tbody id="iter-table-body"></tbody>
+          </table>
+        </div>
+        <!-- Graphe convergence inline -->
+        <div style="margin-top:18px;">
+          <canvas id="conv-chart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résultats Autre Option -->
+    <div class="direct-results" id="autre-results">
+      <div class="section-label">Analyse matricielle — Normes &amp; Déterminant</div>
+      <div id="autre-result-content"></div>
+    </div>
+
+    <!-- Résultats NL (Bisection / Newton / Point fixe) -->
+    <div class="direct-results" id="nl-results">
+      <div class="section-label" id="nl-results-label">Résultats</div>
+      <div class="method-result-grid" id="nl-result-grid" style="grid-template-columns:1fr;"></div>
+      <div id="nl-table-wrap" style="display:none; margin-top:20px;">
+        <div class="section-label">Tableau des itérations</div>
+        <div style="overflow-x:auto; max-height:320px;">
+          <table class="iter-table">
+            <thead id="nl-table-head"></thead>
+            <tbody id="nl-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="nl-conv-wrap" style="margin-top:16px; display:none;">
+        <canvas id="nl-conv-chart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Résultats Recommandation -->
+    <div class="direct-results" id="reco-results">
+      <div class="section-label">Recommandation de méthode</div>
+      <div id="reco-result-content"></div>
+    </div>
+
+    <!-- Résultats Analyse de la fonction -->
+    <div class="direct-results" id="analyse-results">
+      <div class="section-label">Analyse de la fonction</div>
+      <div id="analyse-result-content"></div>
+      <div id="analyse-graphe-wrap" style="margin-top:18px; display:none;">
+        <div class="section-label">Graphe f(x), f'(x), f''(x)</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:8px;">
+          <canvas id="graphe-f"   height="200" style="border:1px solid var(--border); border-radius:var(--r); background:#fff;"></canvas>
+          <canvas id="graphe-df"  height="200" style="border:1px solid var(--border); border-radius:var(--r); background:#fff;"></canvas>
+          <canvas id="graphe-ddf" height="200" style="border:1px solid var(--border); border-radius:var(--r); background:#fff;"></canvas>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:4px; font-size:11px; color:var(--muted); font-family:var(--mono); text-align:center;">
+          <span id="lbl-f">f(x)</span><span id="lbl-df">f'(x)</span><span id="lbl-ddf">f''(x)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Navigation ─────────────────────────────────── */
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  var currentAlgoAxe  = '';
+  var currentAlgoType = '';   // 'directe' | autre
+  var currentAlgoName = '';
+
+  var recommendations = {
+    'Dichotomie': 'Dichotomie est fiable mais lente (convergence linéaire). Utilisez-la quand Newton diverge ou quand f n\'est pas dérivable.',
+    'Newton-Raphson': 'Newton-Raphson converge très vite (quadratique) si le point initial est proche de la racine et f est dérivable. Meilleur choix en général.',
+    'Point fixe': 'Le point fixe converge seulement si |g\'(x)| < 1 au voisinage de la racine. Vérifiez cette condition avant de l\'utiliser.',
+    'Recommandation': 'Répondez aux questions pour identifier la méthode optimale selon les propriétés de votre fonction.',
+    'Analyse de la fonction': 'Utilisez cette option pour explorer f(x) : dérivées, continuité, TVI, localisation des racines et graphes.',
+    'Comparaison des méthodes NL': 'Comparez Dichotomie, Newton-Raphson et Point fixe sur la même f(x) — idéal pour comprendre les différences de convergence.',
+    'Élimination de Gauss': 'Gauss avec pivot partiel est stable et efficace pour les systèmes denses. Préférez LU si vous devez résoudre plusieurs fois avec le même A.',
+    'Factorisation LU': 'LU est plus efficace que Gauss quand le second membre b change. Décomposez A une seule fois, résolvez plusieurs fois.',
+    'Cholesky': 'Cholesky est deux fois plus rapide que LU pour les matrices symétriques définies positives. Vérifiez que tous les mineurs principaux sont > 0.',
+    'Jacobi': 'Jacobi converge si la matrice est à diagonale strictement dominante. Plus lent que Gauss-Seidel mais parallélisable facilement.',
+    'Gauss-Seidel': 'Gauss-Seidel converge environ 2× plus vite que Jacobi car il utilise les valeurs mises à jour immédiatement.',
+    'Comparer Jacobi / Gauss-Seidel': 'Comparez les deux méthodes itératives sur la même matrice pour visualiser la différence de vitesse de convergence.',
+    'Autres options (Normes & det)': 'La norme-1 est la somme max des colonnes, la norme-∞ la somme max des lignes. Le déterminant indique si la matrice est inversible.',
+    'Interpolation de Lagrange': 'Lagrange est simple à implémenter mais instable pour beaucoup de points (phénomène de Runge). Préférez Newton pour ajouter des points.',
+    'Interpolation de Newton': 'Newton est plus efficace que Lagrange car ajouter un point ne nécessite pas de recalcul complet. Recommandé pour n > 5 points.',
+    'Moindres carrés': 'Les moindres carrés via le système normal A^T A θ = A^T y sont exacts et stables.',
+    'Descente de gradient': 'La descente de gradient minimise J(a,b) itérativement. Choisissez α petit pour la stabilité.'
+  };
+
+  /* ── Aller vers un algo ────────────────────────────── */
+  function goAlgo(name, axe, desc, type) {
+    // Placeholder — overridden at bottom of script
+    document.getElementById('algo-title').textContent = name;
+    goTo('p-algo');
+  }
+
+  /* ── Aller vers comparaison directe ─────────────── */
+  function goAlgoDirectComparaison() {
+    goAlgo('Comparer Gauss / LU / Cholesky', 'A2',
+      'Compare Gauss, LU et Cholesky sur la même matrice : solutions, résidus et temps d\'exécution.', 'directe');
+    document.getElementById('algo-title').textContent = 'Comparaison Gauss / LU / Cholesky';
+  }
+
+  function goAlgoIterComparaison() {
+    goAlgo('Comparer Jacobi / Gauss-Seidel', 'A2',
+      'Compare Jacobi et Gauss-Seidel sur la même matrice : solutions, erreurs et vitesse de convergence.', 'iterative');
+  }
+
+  function goAlgoAutreOption() {
+    goAlgo('Autres options (Normes & det)', 'A2',
+      'Calcul des normes-1, norme-∞, norme de Frobenius, déterminant et conditionnement de la matrice A.', 'autre');
+  }
+
+  /* ── Générer la grille matricielle ────────────────── */
+  function genererMatrice() {
+    var nVal = parseInt(document.getElementById('inp-n').value);
+    if (isNaN(nVal) || nVal < 2 || nVal > 10) {
+      alert('Entrez une taille entre 2 et 10.');
+      return;
+    }
+    var gridA = document.getElementById('matrix-grid-A');
+    var gridB = document.getElementById('vec-grid-b');
+    gridA.innerHTML = '';
+    gridB.innerHTML = '';
+    gridA.style.gridTemplateColumns = 'repeat(' + nVal + ', 60px)';
+
+    for (var i = 0; i < nVal; i++) {
+      for (var j = 0; j < nVal; j++) {
+        var inp = document.createElement('input');
+        inp.type = 'number'; inp.step = 'any';
+        inp.id   = 'a_' + i + '_' + j;
+        inp.placeholder = (i === j) ? (nVal + 1 - i) : '0';
+        inp.addEventListener('keydown', matrixKeyNav);
+        gridA.appendChild(inp);
+      }
+    }
+    for (var i = 0; i < nVal; i++) {
+      var inp = document.createElement('input');
+      inp.type = 'number'; inp.step = 'any';
+      inp.id   = 'b_' + i;
+      inp.placeholder = (i + 1);
+      gridB.appendChild(inp);
+    }
+    document.getElementById('matrix-input-area').classList.add('visible');
+    document.getElementById('direct-results').classList.remove('visible');
+    document.getElementById('winner-banner').style.display = 'none';
+  }
+
+  /* navigation clavier dans la grille */
+  function matrixKeyNav(e) {
+    if (e.key !== 'Tab' && e.key !== 'Enter') return;
+    e.preventDefault();
+    var inputs = Array.from(document.querySelectorAll('#matrix-grid-A input, #vec-grid-b input'));
+    var idx = inputs.indexOf(document.activeElement);
+    var next = inputs[idx + 1] || document.getElementById('run-direct-btn');
+    if (next) next.focus();
+  }
+
+  /* ── Lire la matrice depuis la grille ────────────── */
+  function lireMatrice() {
+    var n   = parseInt(document.getElementById('inp-n').value);
+    var A   = [];
+    var b   = [];
+    var ok  = true;
+    for (var i = 0; i < n; i++) {
+      var row = [];
+      for (var j = 0; j < n; j++) {
+        var v = parseFloat(document.getElementById('a_' + i + '_' + j).value);
+        if (isNaN(v)) { ok = false; break; }
+        row.push(v);
+      }
+      if (!ok) break;
+      A.push(row);
+      var bv = parseFloat(document.getElementById('b_' + i).value);
+      if (isNaN(bv)) { ok = false; break; }
+      b.push(bv);
+    }
+    return ok ? { A: A, b: b, n: n } : null;
+  }
+
+  /* ── Algos JS (portés depuis Python) ────────────── */
+  function matMul(A, x) {
+    var n = x.length, r = new Array(n).fill(0);
+    for (var i = 0; i < n; i++)
+      for (var j = 0; j < n; j++) r[i] += A[i][j] * x[j];
+    return r;
+  }
+  function norm(v) { return Math.sqrt(v.reduce((s, vi) => s + vi * vi, 0)); }
+  function residuNorm(A, x, b) {
+    var r = matMul(A, x);
+    return norm(r.map((ri, i) => ri - b[i]));
+  }
+  function det(A) {   // pour matrices jusqu'à 10x10 via cofacteurs (ok pour n<=10)
+    var n = A.length;
+    if (n === 1) return A[0][0];
+    if (n === 2) return A[0][0]*A[1][1] - A[0][1]*A[1][0];
+    var d = 0;
+    for (var j = 0; j < n; j++) {
+      var sub = A.slice(1).map(row => row.filter((_, jj) => jj !== j));
+      d += Math.pow(-1, j) * A[0][j] * det(sub);
+    }
+    return d;
+  }
+
+  function gauss(A, b) {
+    var n = b.length;
+    var Ab = A.map((row, i) => [...row, b[i]]);
+    for (var k = 0; k < n - 1; k++) {
+      var maxIdx = k, maxVal = Math.abs(Ab[k][k]);
+      for (var i = k+1; i < n; i++)
+        if (Math.abs(Ab[i][k]) > maxVal) { maxVal = Math.abs(Ab[i][k]); maxIdx = i; }
+      if (maxIdx !== k) { var tmp = Ab[k]; Ab[k] = Ab[maxIdx]; Ab[maxIdx] = tmp; }
+      if (Math.abs(Ab[k][k]) < 1e-14) throw new Error('Pivot nul');
+      for (var i = k+1; i < n; i++) {
+        var m = Ab[i][k] / Ab[k][k];
+        for (var j = k; j <= n; j++) Ab[i][j] -= m * Ab[k][j];
+      }
+    }
+    var x = new Array(n).fill(0);
+    for (var i = n-1; i >= 0; i--) {
+      var s = Ab[i][n];
+      for (var j = i+1; j < n; j++) s -= Ab[i][j] * x[j];
+      x[i] = s / Ab[i][i];
+    }
+    // matrice échelonnée U (sans colonne b)
+    var U = Ab.map(row => row.slice(0, n));
+    return { sol: x, U: U };
+  }
+
+  function lu(A, b) {
+    var n = b.length;
+    var L = Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => i===j?1:0));
+    var U = A.map(r => [...r]);
+    for (var k = 0; k < n-1; k++) {
+      if (Math.abs(U[k][k]) < 1e-14) throw new Error('Pivot nul');
+      for (var i = k+1; i < n; i++) {
+        L[i][k] = U[i][k] / U[k][k];
+        for (var j = k; j < n; j++) U[i][j] -= L[i][k] * U[k][j];
+      }
+    }
+    // Ly = b
+    var y = new Array(n).fill(0);
+    for (var i = 0; i < n; i++) {
+      var s = b[i];
+      for (var j = 0; j < i; j++) s -= L[i][j]*y[j];
+      y[i] = s;
+    }
+    // Ux = y
+    var x = new Array(n).fill(0);
+    for (var i = n-1; i >= 0; i--) {
+      var s = y[i];
+      for (var j = i+1; j < n; j++) s -= U[i][j]*x[j];
+      x[i] = s / U[i][i];
+    }
+    return { sol: x, L: L, U: U };
+  }
+
+  function estSymetrique(A, tol) {
+    tol = tol || 1e-10;
+    var n = A.length;
+    for (var i = 0; i < n; i++)
+      for (var j = 0; j < n; j++)
+        if (Math.abs(A[i][j] - A[j][i]) > tol) return false;
+    return true;
+  }
+  function estDefPos(A) {
+    var n = A.length;
+    for (var k = 1; k <= n; k++) {
+      var sub = A.slice(0,k).map(r => r.slice(0,k));
+      if (det(sub) <= 0) return false;
+    }
+    return true;
+  }
+
+  function cholesky(A, b) {
+    if (!estSymetrique(A)) throw new Error('Matrice non symétrique');
+    if (!estDefPos(A))     throw new Error('Matrice non définie positive');
+    var n = A.length;
+    var L = Array.from({length:n}, () => new Array(n).fill(0));
+    for (var i = 0; i < n; i++) {
+      for (var j = 0; j <= i; j++) {
+        var s = 0;
+        for (var k = 0; k < j; k++) s += L[i][k] * L[j][k];
+        if (i === j) {
+          var val = A[i][i] - s;
+          if (val <= 0) throw new Error('Valeur négative sous racine');
+          L[i][j] = Math.sqrt(val);
+        } else {
+          L[i][j] = (A[i][j] - s) / L[j][j];
+        }
+      }
+    }
+    // Ly = b
+    var y = new Array(n).fill(0);
+    for (var i = 0; i < n; i++) {
+      var s = b[i];
+      for (var j = 0; j < i; j++) s -= L[i][j]*y[j];
+      y[i] = s / L[i][i];
+    }
+    // Lᵀx = y
+    var x = new Array(n).fill(0);
+    for (var i = n-1; i >= 0; i--) {
+      var s = y[i];
+      for (var j = i+1; j < n; j++) s -= L[j][i]*x[j];
+      x[i] = s / L[i][i];
+    }
+    return { sol: x, L: L };
+  }
+
+  /* ── Exécuter méthodes directes ──────────────────── */
+  function runDirect() {
+    var data = lireMatrice();
+    if (!data) { alert('Remplissez toutes les cellules de la matrice et du vecteur b.'); return; }
+    var A = data.A, b = data.b;
+    var algoName = document.getElementById('algo-title').textContent;
+    var isCompar = algoName.includes('Compar');
+
+    // Méthodes à exécuter
+    var methods = [];
+    if (isCompar || algoName === 'Élimination de Gauss') methods.push({name:'Gauss', fn: gauss});
+    if (isCompar || algoName === 'Factorisation LU')     methods.push({name:'LU',    fn: lu});
+    if (isCompar || algoName === 'Cholesky')              methods.push({name:'Cholesky', fn: cholesky});
+
+    var results = methods.map(m => {
+      try {
+        var t0 = performance.now();
+        var res  = m.fn(A, b);
+        var t1 = performance.now();
+        var x = res.sol;
+        var residue = residuNorm(A, x, b);
+        return { name: m.name, x: x, time: t1-t0, residue: residue, error: null,
+                 L: res.L || null, U: res.U || null };
+      } catch(e) {
+        return { name: m.name, x: null, error: e.message };
+      }
+    });
+
+    afficherResultatsDirect(results);
+  }
+
+  function fmt(v, d) {
+    d = d || 6;
+    if (Math.abs(v) < 1e-4 || Math.abs(v) >= 1e6)
+      return v.toExponential(3);
+    return parseFloat(v.toFixed(d));
+  }
+
+  function matrixHtml(M, label) {
+    if (!M) return '';
+    var rows = M.map(row =>
+      '<tr>' + row.map(v => '<td>' + fmt(v) + '</td>').join('') + '</tr>'
+    ).join('');
+    return '<div style="margin-top:14px;">'
+      + '<div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;">' + label + '</div>'
+      + '<div style="overflow-x:auto;"><table class="iter-table"><tbody>' + rows + '</tbody></table></div>'
+      + '</div>';
+  }
+
+  function afficherResultatsDirect(results) {
+    var valides = results.filter(r => r.x !== null);
+    var bestTime = valides.length ? valides.reduce((a,b) => a.time < b.time ? a : b) : null;
+    var bestRes  = valides.length ? valides.reduce((a,b) => a.residue < b.residue ? a : b) : null;
+
+    var grid = document.getElementById('method-result-grid');
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = results.length === 1 ? '1fr' : results.length === 2 ? '1fr 1fr' : 'repeat(3,1fr)';
+
+    results.forEach(r => {
+      var isBest = bestTime && bestRes && r.name === bestTime.name && r.name === bestRes.name && valides.length > 1;
+      var card = document.createElement('div');
+      card.className = 'method-card' + (isBest ? ' best' : '');
+
+      var badgeCls = r.error ? 'badge-err' : (isBest ? 'badge-best' : 'badge-ok');
+      var badgeTxt = r.error ? 'Erreur' : (isBest ? '⚡ Meilleur' : 'OK');
+
+      var solHtml = '';
+      if (r.x) {
+        solHtml = r.x.map((xi,i) => 'x<sub>'+(i+1)+'</sub> = <b>'+fmt(xi)+'</b>').join('<br>');
+      } else {
+        solHtml = '<span style="color:#c0392b;">'+r.error+'</span>';
+      }
+
+      var statsHtml = '';
+      if (r.x) {
+        statsHtml = '<div class="method-stats">'
+          + '<div class="mstat">Temps <span>'+(r.time < 0.1 ? '< 0.1' : r.time.toFixed(3))+' ms</span></div>'
+          + '<div class="mstat">Résidu <span>'+r.residue.toExponential(2)+'</span></div>'
+          + '</div>';
+      }
+
+      // Matrices intermédiaires
+      var matricesHtml = '';
+      if (r.x) {
+        if (r.name === 'LU') {
+          matricesHtml += matrixHtml(r.L, 'Matrice L (triangulaire inférieure)');
+          matricesHtml += matrixHtml(r.U, 'Matrice U (triangulaire supérieure)');
+        } else if (r.name === 'Cholesky') {
+          matricesHtml += matrixHtml(r.L, 'Matrice L  (A = L · Lᵀ)');
+        } else if (r.name === 'Gauss') {
+          matricesHtml += matrixHtml(r.U, 'Matrice échelonnée U');
+        }
+      }
+
+      card.innerHTML =
+        '<div class="method-card-head">'
+          + '<div class="method-card-name">'+r.name+'</div>'
+          + '<span class="method-badge '+badgeCls+'">'+badgeTxt+'</span>'
+        + '</div>'
+        + '<div class="method-solution">'+solHtml+'</div>'
+        + statsHtml
+        + matricesHtml;
+      grid.appendChild(card);
+    });
+
+    var banner = document.getElementById('winner-banner');
+    if (valides.length > 1 && bestTime && bestRes) {
+      var gagnant = bestTime.name === bestRes.name
+        ? bestTime.name
+        : bestTime.name + ' (vitesse) & ' + bestRes.name + ' (précision)';
+      banner.innerHTML =
+        '<strong>Résultat :</strong> '
+        + '⚡ Plus rapide : <strong>'+bestTime.name+'</strong> ('+bestTime.time.toFixed(3)+' ms) · '
+        + '🎯 Plus précis : <strong>'+bestRes.name+'</strong> (résidu = '+bestRes.residue.toExponential(2)+')';
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+
+    document.getElementById('direct-results').classList.add('visible');
+    document.getElementById('direct-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ── Algo standard (non linéaire / interpolation) ── */
+  function runAlgo() {
+    document.getElementById('result-card').classList.add('visible');
+  }
+  
+    /* ── Aller vers comparaison directe ─────────────── */
+  
+    function goAlgoComparaison() {
+      goAlgo('Comparer Jacobi / Gauss-Seidel', 'A2',
+        'Compare Jacobi et Gauss-Seidel sur la même matrice : solutions, erreurs et vitesse de convergence.', 'iterative');
+    }
+
+
+  function goAlgoAutreOption() {
+    goAlgo('Autres options (Normes & det)', 'A2',
+      'Calcul des normes-1, norme-∞, norme de Frobenius, déterminant et conditionnement de la matrice A.', 'autre');
+  }
+
+  /* ── Générer grille itérative ──────────────────────── */
+  function genererMatriceIter() {
+    var nVal = parseInt(document.getElementById('inp-n-iter').value);
+    if (isNaN(nVal) || nVal < 2 || nVal > 10) { alert('Entrez une taille entre 2 et 10.'); return; }
+    var gridA = document.getElementById('matrix-grid-A-iter');
+    var gridB = document.getElementById('vec-grid-b-iter');
+    gridA.innerHTML = ''; gridB.innerHTML = '';
+    gridA.style.gridTemplateColumns = 'repeat(' + nVal + ', 60px)';
+    for (var i = 0; i < nVal; i++) {
+      for (var j = 0; j < nVal; j++) {
+        var inp = document.createElement('input');
+        inp.type = 'number'; inp.step = 'any';
+        inp.id = 'ai_' + i + '_' + j;
+        inp.placeholder = (i === j) ? (nVal + 1 - i) : '0';
+        gridA.appendChild(inp);
+      }
+    }
+    for (var i = 0; i < nVal; i++) {
+      var inp = document.createElement('input');
+      inp.type = 'number'; inp.step = 'any';
+      inp.id = 'bi_' + i; inp.placeholder = (i + 1);
+      gridB.appendChild(inp);
+    }
+    document.getElementById('matrix-input-area-iter').classList.add('visible');
+    document.getElementById('iter-results').classList.remove('visible');
+  }
+
+  /* ── Lire matrice itérative ─────────────────────────── */
+  function lireMatriceIter() {
+    var n  = parseInt(document.getElementById('inp-n-iter').value);
+    var tol = parseFloat(document.getElementById('inp-tol-iter').value) || 1e-4;
+    var A = [], b = [], ok = true;
+    for (var i = 0; i < n; i++) {
+      var row = [];
+      for (var j = 0; j < n; j++) {
+        var v = parseFloat(document.getElementById('ai_' + i + '_' + j).value);
+        if (isNaN(v)) { ok = false; break; }
+        row.push(v);
+      }
+      if (!ok) break;
+      A.push(row);
+      var bv = parseFloat(document.getElementById('bi_' + i).value);
+      if (isNaN(bv)) { ok = false; break; }
+      b.push(bv);
+    }
+    return ok ? { A, b, n, tol } : null;
+  }
+
+  /* ── Algorithmes itératifs en JS ───────────────────── */
+  function jsJacobi(A, b, tol, maxIter) {
+    var n = b.length;
+    var x = new Array(n).fill(0);
+    var history = [x.slice()], errors = [];
+    for (var k = 0; k < maxIter; k++) {
+      var xnew = x.slice();
+      for (var i = 0; i < n; i++) {
+        var s = b[i];
+        for (var j = 0; j < n; j++) if (j !== i) s -= A[i][j] * x[j];
+        xnew[i] = s / A[i][i];
+      }
+      var err = normVec(xnew.map((v, i) => v - x[i]));
+      history.push(xnew.slice()); errors.push(err);
+      if (err < tol) return { sol: xnew, history, errors, iter: k + 1 };
+      x = xnew;
+    }
+    return { sol: x, history, errors, iter: maxIter };
+  }
+
+  function jsGaussSeidel(A, b, tol, maxIter) {
+    var n = b.length;
+    var x = new Array(n).fill(0);
+    var history = [x.slice()], errors = [];
+    for (var k = 0; k < maxIter; k++) {
+      var xnew = x.slice();
+      for (var i = 0; i < n; i++) {
+        var s1 = 0; for (var j = 0; j < i; j++)   s1 += A[i][j] * xnew[j];
+        var s2 = 0; for (var j = i+1; j < n; j++) s2 += A[i][j] * x[j];
+        xnew[i] = (b[i] - s1 - s2) / A[i][i];
+      }
+      var err = normVec(xnew.map((v, i) => v - x[i]));
+      history.push(xnew.slice()); errors.push(err);
+      if (err < tol) return { sol: xnew, history, errors, iter: k + 1 };
+      x = xnew;
+    }
+    return { sol: x, history, errors, iter: maxIter };
+  }
+
+  function normVec(v) { return Math.sqrt(v.reduce((s, vi) => s + vi*vi, 0)); }
+  function norm1Vec(v) { return v.reduce((s, vi) => s + Math.abs(vi), 0); }
+  function normInfVec(v) { return Math.max(...v.map(Math.abs)); }
+
+  /* ── Exécuter itératif ──────────────────────────────── */
+  function runIter() {
+    var data = lireMatriceIter();
+    if (!data) { alert('Remplissez toutes les cellules.'); return; }
+    var A = data.A, b = data.b, tol = data.tol;
+    var algoName = document.getElementById('algo-title').textContent;
+
+    var isCompar = algoName.includes('Comparer');
+    var doJacobi = isCompar || algoName === 'Jacobi';
+    var doGS     = isCompar || algoName === 'Gauss-Seidel';
+
+    var resJ = null, resGS = null;
+    if (doJacobi) resJ  = jsJacobi(A, b, tol, 200);
+    if (doGS)     resGS = jsGaussSeidel(A, b, tol, 200);
+
+    afficherResultatsIter(A, b, tol, resJ, resGS, isCompar);
+  }
+
+  function afficherResultatsIter(A, b, tol, resJ, resGS, isCompar) {
+    var grid = document.getElementById('iter-result-grid');
+    grid.innerHTML = '';
+    var results = [];
+    if (resJ)  results.push({ name: 'Jacobi',       r: resJ,  color: '#2D6A4F' });
+    if (resGS) results.push({ name: 'Gauss-Seidel', r: resGS, color: '#2B5BA8' });
+
+    grid.style.gridTemplateColumns = results.length === 1 ? '1fr' : '1fr 1fr';
+
+    var bestIter = results.reduce((a, b) => a.r.iter < b.r.iter ? a : b, results[0]);
+
+    results.forEach(function(m) {
+      var isBest = isCompar && m.name === bestIter.name;
+      var card = document.createElement('div');
+      card.className = 'method-card' + (isBest ? ' best' : '');
+      var badgeCls = isBest ? 'badge-best' : 'badge-ok';
+      var badgeTxt = isBest ? '⚡ Plus rapide' : 'OK';
+
+      var solHtml = m.r.sol.map((xi, i) => 'x<sub>'+(i+1)+'</sub> = <b>'+fmt(xi)+'</b>').join('<br>');
+      var res2    = matMul(A, m.r.sol).map((v, i) => v - b[i]);
+      var resNorm = normVec(res2);
+
+      card.innerHTML =
+        '<div class="method-card-head">'
+          + '<div class="method-card-name">'+m.name+'</div>'
+          + '<span class="method-badge '+badgeCls+'">'+badgeTxt+'</span>'
+        + '</div>'
+        + '<div class="method-solution">'+solHtml+'</div>'
+        + '<div class="method-stats">'
+          + '<div class="mstat">Itérations <span>'+m.r.iter+'</span></div>'
+          + '<div class="mstat">Résidu <span>'+resNorm.toExponential(2)+'</span></div>'
+          + '<div class="mstat">Tolérance <span>'+tol+'</span></div>'
+        + '</div>';
+      grid.appendChild(card);
+    });
+
+    // Banner winner
+    var banner = document.getElementById('iter-winner-banner');
+    if (isCompar && resJ && resGS) {
+      var w = resJ.iter < resGS.iter ? 'Jacobi' : (resGS.iter < resJ.iter ? 'Gauss-Seidel' : 'Égalité');
+      banner.innerHTML = '<strong>Résultat :</strong> ⚡ Plus rapide : <strong>'+w+'</strong> · Jacobi: '+resJ.iter+' iter · Gauss-Seidel: '+resGS.iter+' iter';
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+
+    // Tableau d'itérations (du premier résultat)
+    var mainRes = resJ || resGS;
+    var n = mainRes.sol.length;
+    var thead = document.getElementById('iter-table-head');
+    var tbody = document.getElementById('iter-table-body');
+    var cols = ['Itération', ...Array.from({length:n}, (_,i) => 'x'+(i+1)), '‖erreur‖'];
+    thead.innerHTML = '<tr>' + cols.map(c => '<th>'+c+'</th>').join('') + '</tr>';
+    tbody.innerHTML = mainRes.history.map((xi, k) => {
+      var err = k === 0 ? '—' : mainRes.errors[k-1].toExponential(3);
+      return '<tr><td>'+k+'</td>' + xi.map(v => '<td>'+v.toFixed(6)+'</td>').join('') + '<td>'+err+'</td></tr>';
+    }).join('');
+    document.getElementById('iter-table-wrap').style.display = 'block';
+
+    // Canvas convergence chart
+    renderConvChart(resJ ? resJ.errors : null, resGS ? resGS.errors : null, tol);
+
+    document.getElementById('iter-results').classList.add('visible');
+    document.getElementById('iter-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ── Graphe convergence canvas ──────────────────────── */
+  function renderConvChart(errJ, errGS, tol) {
+    var canvas = document.getElementById('conv-chart');
+    var ctx = canvas.getContext('2d');
+    canvas.width  = canvas.parentElement.offsetWidth || 680;
+    canvas.height = 220;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    var allErrs = [...(errJ||[]), ...(errGS||[])];
+    if (!allErrs.length) return;
+    var maxN  = Math.max((errJ||[]).length, (errGS||[]).length);
+    var minE  = Math.min(...allErrs, tol) * 0.5;
+    var maxE  = Math.max(...allErrs) * 2;
+
+    var pad = { left:58, right:20, top:16, bottom:40 };
+    var W   = canvas.width - pad.left - pad.right;
+    var H   = canvas.height - pad.top - pad.bottom;
+
+    function xp(k)   { return pad.left + (k / (maxN)) * W; }
+    function yp(err) { return pad.top + H - (Math.log10(err) - Math.log10(minE)) / (Math.log10(maxE) - Math.log10(minE)) * H; }
+
+    // Grid
+    ctx.strokeStyle = '#E2DFD6'; ctx.lineWidth = 1;
+    for (var i = 0; i <= 5; i++) {
+      var y = pad.top + (i / 5) * H;
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + W, y); ctx.stroke();
+    }
+
+    // Tolerance line
+    ctx.strokeStyle = '#B7935A'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); var yt = yp(tol);
+    ctx.moveTo(pad.left, yt); ctx.lineTo(pad.left + W, yt); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#B7935A'; ctx.font = '10px DM Mono, monospace';
+    ctx.fillText('ε='+tol, pad.left + W + 2, yt + 3);
+
+    // Jacobi
+    if (errJ && errJ.length) {
+      ctx.strokeStyle = '#2D6A4F'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      errJ.forEach(function(e, k) { k === 0 ? ctx.moveTo(xp(k+1), yp(e)) : ctx.lineTo(xp(k+1), yp(e)); });
+      ctx.stroke();
+    }
+    // Gauss-Seidel
+    if (errGS && errGS.length) {
+      ctx.strokeStyle = '#2B5BA8'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      errGS.forEach(function(e, k) { k === 0 ? ctx.moveTo(xp(k+1), yp(e)) : ctx.lineTo(xp(k+1), yp(e)); });
+      ctx.stroke();
+    }
+
+    // Axes labels
+    ctx.fillStyle = '#7A7870'; ctx.font = '11px DM Sans, sans-serif';
+    ctx.fillText('Itération', pad.left + W/2 - 20, canvas.height - 6);
+    ctx.save(); ctx.translate(13, pad.top + H/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Erreur (log)', -28, 0); ctx.restore();
+
+    // Légende
+    if (errJ && errGS) {
+      ctx.fillStyle = '#2D6A4F'; ctx.fillRect(pad.left, 2, 14, 8);
+      ctx.fillStyle = '#1A1916';  ctx.fillText('Jacobi', pad.left + 18, 10);
+      ctx.fillStyle = '#2B5BA8'; ctx.fillRect(pad.left + 70, 2, 14, 8);
+      ctx.fillStyle = '#1A1916';  ctx.fillText('Gauss-Seidel', pad.left + 88, 10);
+    }
+  }
+
+  /* ── Autre option : normes / det ────────────────────── */
+  function genererMatriceAutre() {
+    var nVal = parseInt(document.getElementById('inp-n-autre').value);
+    if (isNaN(nVal) || nVal < 2 || nVal > 10) { alert('Entrez une taille entre 2 et 10.'); return; }
+    var gridA = document.getElementById('matrix-grid-A-autre');
+    gridA.innerHTML = '';
+    gridA.style.gridTemplateColumns = 'repeat(' + nVal + ', 60px)';
+    for (var i = 0; i < nVal; i++)
+      for (var j = 0; j < nVal; j++) {
+        var inp = document.createElement('input');
+        inp.type = 'number'; inp.step = 'any';
+        inp.id = 'ao_' + i + '_' + j;
+        inp.placeholder = (i === j) ? (nVal + 1 - i) : '0';
+        gridA.appendChild(inp);
+      }
+    document.getElementById('matrix-input-area-autre').classList.add('visible');
+    document.getElementById('autre-results').classList.remove('visible');
+  }
+
+  function lireMatriceAutre() {
+    var n = parseInt(document.getElementById('inp-n-autre').value);
+    var A = [], ok = true;
+    for (var i = 0; i < n; i++) {
+      var row = [];
+      for (var j = 0; j < n; j++) {
+        var v = parseFloat(document.getElementById('ao_' + i + '_' + j).value);
+        if (isNaN(v)) { ok = false; break; }
+        row.push(v);
+      }
+      if (!ok) break;
+      A.push(row);
+    }
+    return ok ? { A, n } : null;
+  }
+
+  function runAutreOption() {
+    var data = lireMatriceAutre();
+    if (!data) { alert('Remplissez toutes les cellules.'); return; }
+    var A = data.A, n = data.n;
+
+    // Normes matricielles
+    var norm1   = Math.max(...Array.from({length:n}, (_,j) => A.reduce((s,r) => s + Math.abs(r[j]), 0)));
+    var normInf = Math.max(...A.map(r => r.reduce((s,v) => s + Math.abs(v), 0)));
+    var normF   = Math.sqrt(A.flat().reduce((s,v) => s + v*v, 0));
+    var detVal  = det(A);
+    var singular = Math.abs(detVal) < 1e-12;
+
+    // Conditionnement approx via spectrale (1/σmin * σmax — simplifié via ratio de normes)
+    var condApprox = normF * normF; // rough; pour exact il faudrait SVD
+
+    var content = document.getElementById('autre-result-content');
+    content.innerHTML = `
+      <div class="method-result-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:16px;">
+        <div class="method-card">
+          <div class="method-card-head"><div class="method-card-name">Norme-1 ‖A‖₁</div><span class="method-badge badge-ok">max col</span></div>
+          <div class="method-solution" style="font-size:22px;text-align:center;padding:16px 10px;">${norm1.toFixed(6)}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">Σ max colonne des |a_ij|</div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head"><div class="method-card-name">Norme-∞ ‖A‖∞</div><span class="method-badge badge-ok">max lig</span></div>
+          <div class="method-solution" style="font-size:22px;text-align:center;padding:16px 10px;">${normInf.toFixed(6)}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">Σ max ligne des |a_ij|</div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head"><div class="method-card-name">Norme Frobenius ‖A‖F</div><span class="method-badge badge-ok">√Σa²</span></div>
+          <div class="method-solution" style="font-size:22px;text-align:center;padding:16px 10px;">${normF.toFixed(6)}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">Racine carrée de Σ a²ᵢⱼ</div>
+        </div>
+        <div class="method-card ${singular ? '' : 'best'}">
+          <div class="method-card-head"><div class="method-card-name">Déterminant det(A)</div>
+            <span class="method-badge ${singular ? 'badge-err' : 'badge-best'}">${singular ? 'Singulière' : 'Inversible'}</span>
+          </div>
+          <div class="method-solution" style="font-size:22px;text-align:center;padding:16px 10px;">${fmt(detVal)}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">${singular ? 'det ≈ 0 → système singulier' : 'det ≠ 0 → système admet une unique solution'}</div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head"><div class="method-card-name">Symétrie</div><span class="method-badge badge-ok">test</span></div>
+          <div class="method-solution" style="font-size:18px;text-align:center;padding:12px 10px;">${estSymetrique(A) ? '✅ Symétrique' : '❌ Non symétrique'}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">A = Aᵀ ?</div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head"><div class="method-card-name">Définie positive</div><span class="method-badge badge-ok">Cholesky</span></div>
+          <div class="method-solution" style="font-size:18px;text-align:center;padding:12px 10px;">${estDefPos(A) ? '✅ Définie positive' : '❌ Non définie positive'}</div>
+          <div style="font-size:11px;color:#7A7870;padding:0 10px 8px;">Tous mineurs principaux > 0 ?</div>
+        </div>
+      </div>
+      <div class="winner-banner">
+        <strong>Analyse :</strong>
+        La matrice est ${singular ? '<strong style="color:#c0392b;">singulière</strong> — aucune méthode directe ne peut résoudre le système.' :
+          '<strong>inversible</strong>.'}
+        ${estSymetrique(A) && estDefPos(A) ? ' Elle est <strong>symétrique définie positive</strong> → Cholesky applicable.' : ''}
+        ‖A‖₁ = ${norm1.toFixed(4)} · ‖A‖∞ = ${normInf.toFixed(4)} · det = ${fmt(detVal)}.
+      </div>`;
+
+    document.getElementById('autre-results').classList.add('visible');
+    document.getElementById('autre-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ══════════════════════════════════════════════════════
+     MÉTHODES NON LINÉAIRES  (Bisection / Newton / Point fixe / Comparaison)
+  ══════════════════════════════════════════════════════ */
+
+  var NL_METHODS    = ['Bisection', 'Newton-Raphson', 'Point fixe',
+                       'Comparaison des méthodes NL', 'Recommandation', 'Analyse de la fonction'];
+  var ITER_METHODS  = ['Jacobi', 'Gauss-Seidel', 'Comparer Jacobi / Gauss-Seidel'];
+  var AUTRE_METHODS = ['Autres options (Normes & det)'];
+  var DIRECT_METHODS= ['Élimination de Gauss', 'Factorisation LU', 'Cholesky', 'Comparer Gauss / LU / Cholesky'];
+
+  function isNLMethod(name)     { return NL_METHODS.includes(name);    }
+  function isDirectMethod(name) { return DIRECT_METHODS.includes(name);}
+  function isIterMethod(name)   { return ITER_METHODS.includes(name);  }
+  function isAutreMethod(name)  { return AUTRE_METHODS.includes(name); }
+
+  /* ── Naviguer vers les 3 nouvelles options A1 ─────── */
+  function goAlgoRecommandation() {
+    goAlgo('Recommandation', 'A1',
+      'Répondez à quelques questions pour identifier la méthode la plus adaptée à votre problème.', 'nl');
+  }
+  function goAlgoAnalyse() {
+    goAlgo('Analyse de la fonction', 'A1',
+      'Calcul des dérivées, vérification de la continuité, TVI et localisation des racines.', 'nl');
+  }
+  function goAlgoComparaisonNL() {
+    goAlgo('Comparaison des méthodes NL', 'A1',
+      'Applique Bisection, Newton-Raphson et Point fixe sur la même f(x) et compare vitesse + précision.', 'nl');
+  }
+
+  /* ── Mettre à jour goAlgo pour les panels NL ─────── */
+  // (override de la précédente déclaration – voir en bas)
+
+  /* ═══ VALIDATION DES INPUTS ═══ */
+
+  /* Efface une erreur quand l'utilisateur corrige */
+  function clearInputError(inputId, errId) {
+    var inp = document.getElementById(inputId);
+    var err = document.getElementById(errId);
+    if (inp) inp.classList.remove('input-error');
+    if (err) { err.textContent = ''; err.classList.remove('visible'); }
+    var banner = document.getElementById('nl-error-banner');
+    if (banner) { banner.textContent = ''; banner.classList.remove('visible'); }
+  }
+
+  /* Marque un champ comme invalide */
+  function setInputError(inputId, errId, msg) {
+    var inp = document.getElementById(inputId);
+    var err = document.getElementById(errId);
+    if (inp) inp.classList.add('input-error');
+    if (err) { err.textContent = msg; err.classList.add('visible'); }
+  }
+
+  /* Affiche la bannière d'erreur globale */
+  function showErrorBanner(bannerId, msg) {
+    var banner = document.getElementById(bannerId);
+    if (banner) { banner.innerHTML = '<strong>⚠ Erreur :</strong> ' + msg; banner.classList.add('visible'); }
+  }
+
+  /* Valide une expression f(x) — retourne null si ok, sinon le message d'erreur */
+  function validateFx(expr) {
+    if (!expr || !expr.trim()) return 'Ce champ est obligatoire.';
+    // Caractères / tokens interdits ou typiquement incorrects
+    var forbidden = [
+      { re: /[;{}[\]]/,             msg: 'Caractère interdit détecté (' + expr.match(/[;{}[\]]/) + ').' },
+      { re: /\b([a-wyzA-WYZ]{2,})\b(?![\s(])/,
+                                    msg: null }, // sera vérifié dynamiquement
+    ];
+    // Mots-clés connus
+    var knownFns = ['sin','cos','tan','exp','log','ln','sqrt','abs','pi','e'];
+    // Cherche des "mots" inconnus (lettres groupées qui ne sont pas x ou des fonctions connues)
+    var tokens = expr.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      if (t === 'x') continue;
+      if (knownFns.indexOf(t.toLowerCase()) !== -1) continue;
+      return 'Fonction ou variable inconnue : "' + t + '". Utilisez : x, sin, cos, tan, exp, log, ln, sqrt, abs, pi.';
+    }
+    // Essai d'évaluation réelle
+    try {
+      var fn = buildFn(expr);
+      var v = fn(1.5);
+      if (v === undefined) return 'Expression invalide (résultat indéfini).';
+      // NaN peut être normal (ex: log(-1)), on accepte
+    } catch(e) {
+      return 'Erreur de syntaxe : ' + e.message;
+    }
+    return null; // OK
+  }
+
+  /* Valide a ou b (doit être un nombre fini) */
+  function validateNumber(val, name) {
+    if (val === '' || val === null || val === undefined) return name + ' est obligatoire.';
+    var n = parseFloat(val);
+    if (isNaN(n)) return name + ' doit être un nombre (ex: 1, -2, 0.5). Valeur reçue : "' + val + '".';
+    if (!isFinite(n)) return name + ' doit être fini.';
+    return null;
+  }
+
+  /* Valide epsilon */
+  function validateEps(val) {
+    if (!val || !val.trim()) return 'La tolérance est obligatoire.';
+    var n = parseFloat(val);
+    if (isNaN(n) || n <= 0) return 'La tolérance doit être un nombre positif (ex: 1e-4, 0.001). Valeur reçue : "' + val + '".';
+    return null;
+  }
+
+  /* Valide l'intervalle [a,b] : a < b */
+  function validateInterval(a, b) {
+    var na = parseFloat(a), nb = parseFloat(b);
+    if (!isNaN(na) && !isNaN(nb) && na >= nb)
+      return 'L\'intervalle est invalide : a (' + na + ') doit être strictement inférieur à b (' + nb + ').';
+    return null;
+  }
+
+  /* Validation complète avant runNL() — retourne true si tout est OK */
+  function validateNLInputs() {
+    var fxStr = (document.getElementById('nl-fx') || {}).value || '';
+    var aStr  = (document.getElementById('nl-a')  || {}).value || '';
+    var bStr  = (document.getElementById('nl-b')  || {}).value || '';
+    var epsStr= (document.getElementById('nl-eps') || {}).value || '';
+    var name  = document.getElementById('algo-title').textContent;
+
+    // Réinitialiser toutes les erreurs
+    ['nl-fx','nl-a','nl-b','nl-eps'].forEach(function(id) {
+      var inp = document.getElementById(id);
+      if (inp) inp.classList.remove('input-error');
+    });
+    ['nl-fx-err','nl-a-err','nl-b-err','nl-eps-err'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.textContent=''; el.classList.remove('visible'); }
+    });
+    var banner = document.getElementById('nl-error-banner');
+    if (banner) { banner.innerHTML=''; banner.classList.remove('visible'); }
+
+    var hasError = false;
+
+    // f(x)
+    var fxErr = validateFx(fxStr.trim());
+    if (fxErr) { setInputError('nl-fx','nl-fx-err', fxErr); hasError = true; }
+
+    // a
+    var needsAB = (name !== 'Newton-Raphson' && name !== 'Point fixe');
+    var aErr = validateNumber(aStr.trim(), 'a');
+    if (aErr) { setInputError('nl-a','nl-a-err', aErr); hasError = true; }
+
+    // b
+    var bErr = validateNumber(bStr.trim(), 'b');
+    if (bErr) { setInputError('nl-b','nl-b-err', bErr); hasError = true; }
+
+    // Intervalle a < b
+    if (!aErr && !bErr) {
+      var ivErr = validateInterval(aStr.trim(), bStr.trim());
+      if (ivErr) {
+        setInputError('nl-a','nl-a-err', '');
+        setInputError('nl-b','nl-b-err', ivErr);
+        hasError = true;
+      }
+    }
+
+    // epsilon
+    var epsErr = validateEps(epsStr.trim());
+    if (epsErr) { setInputError('nl-eps','nl-eps-err', epsErr); hasError = true; }
+
+    // g(x) pour Point fixe
+    var gxEl = document.getElementById('nl-gx');
+    if (gxEl) {
+      var gxErr = validateFx(gxEl.value.trim());
+      if (gxErr) {
+        gxEl.classList.add('input-error');
+        // Ajouter message sous le champ si possible
+        var gxErrSpan = document.getElementById('nl-gx-err');
+        if (gxErrSpan) { gxErrSpan.textContent = gxErr; gxErrSpan.classList.add('visible'); }
+        else showErrorBanner('nl-error-banner', 'g(x) : ' + gxErr);
+        hasError = true;
+      }
+    }
+
+    // x0 numérique
+    var x0El = document.getElementById('nl-x0');
+    if (x0El) {
+      var x0Err = validateNumber(x0El.value.trim(), 'x₀');
+      if (x0Err) {
+        x0El.classList.add('input-error');
+        showErrorBanner('nl-error-banner', x0Err);
+        hasError = true;
+      }
+    }
+
+    if (hasError) {
+      if (!fxErr && !aErr && !bErr && !epsErr) {
+        // Erreur globale uniquement
+      } else {
+        showErrorBanner('nl-error-banner', 'Corrigez les champs en rouge avant de continuer.');
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /* ═══ ÉVALUATEUR DE FONCTION SAFE ═══ */
+  function buildFn(expr) {
+    // Remplace ^ par **, accepte sin, cos, exp, log, sqrt, abs
+    var e = expr.replace(/\^/g, '**')
+                .replace(/\bln\b/g, 'Math.log')
+                .replace(/\blog\b/g, 'Math.log10')
+                .replace(/\bsqrt\b/g, 'Math.sqrt')
+                .replace(/\babs\b/g, 'Math.abs')
+                .replace(/\bsin\b/g, 'Math.sin')
+                .replace(/\bcos\b/g, 'Math.cos')
+                .replace(/\btan\b/g, 'Math.tan')
+                .replace(/\bexp\b/g, 'Math.exp')
+                .replace(/\bpi\b/g, 'Math.PI')
+                .replace(/\be\b/g, 'Math.E');
+    return function(x) {
+      try { return Function('x', 'return ' + e)(x); }
+      catch(err) { return NaN; }
+    };
+  }
+
+  /* Dérivée numérique centrale */
+  function derivNumerique(f, x, h) {
+    h = h || 1e-7;
+    return (f(x + h) - f(x - h)) / (2 * h);
+  }
+  function deriv2Numerique(f, x, h) {
+    h = h || 1e-5;
+    return (f(x + h) - 2*f(x) + f(x - h)) / (h*h);
+  }
+
+  /* ═══ BISECTION JS ═══ */
+  function jsBisection(f, a, b, eps, maxIter) {
+    if (f(a) * f(b) > 0) return { ok: false, msg: 'Pas de changement de signe sur [a, b]' };
+    var rows = [], c;
+    for (var i = 1; i <= maxIter; i++) {
+      c = (a + b) / 2;
+      var err = (b - a) / 2;
+      rows.push({ iter: i, a: a, b: b, c: c, fc: f(c), err: err });
+      if (err < eps) break;
+      if (f(a) * f(c) < 0) b = c; else a = c;
+    }
+    return { ok: true, racine: c, rows: rows, iter: rows.length };
+  }
+
+  /* ═══ NEWTON JS ═══ */
+  function jsNewton(f, x0, eps, maxIter) {
+    var x = x0, rows = [];
+    for (var i = 0; i < maxIter; i++) {
+      var fx  = f(x);
+      var dfx = derivNumerique(f, x);
+      if (Math.abs(dfx) < 1e-14) return { ok: false, msg: "Dérivée nulle en x=" + x.toFixed(6) };
+      var xn  = x - fx / dfx;
+      var err = Math.abs(xn - x);
+      rows.push({ iter: i+1, xn: x, fx: fx, dfx: dfx, xnew: xn, err: err });
+      if (err < eps) return { ok: true, racine: xn, rows: rows, iter: rows.length };
+      x = xn;
+    }
+    return { ok: true, racine: x, rows: rows, iter: rows.length, warned: 'max iter atteint' };
+  }
+
+  /* ═══ POINT FIXE JS ═══ */
+  function jsPointFixe(g, x0, eps, maxIter) {
+    var x = x0, rows = [];
+    for (var i = 0; i < maxIter; i++) {
+      var xn  = g(x);
+      var err = Math.abs(xn - x);
+      rows.push({ iter: i+1, x: x, xnew: xn, err: err });
+      if (err < eps) return { ok: true, racine: xn, rows: rows, iter: rows.length };
+      x = xn;
+      if (!isFinite(x)) return { ok: false, msg: 'Divergence détectée' };
+    }
+    return { ok: true, racine: x, rows: rows, iter: rows.length, warned: 'max iter atteint' };
+  }
+
+  /* ── Afficher champs supplémentaires selon méthode ── */
+  function updateNLExtra(name) {
+    var extra = document.getElementById('nl-extra');
+    extra.innerHTML = '';
+    if (name === 'Newton-Raphson') {
+      extra.innerHTML =
+        '<div class="field"><label>x₀ (point initial)</label><input type="number" id="nl-x0" step="any" placeholder="2" oninput="this.classList.remove(\'input-error\')"/></div>';
+    } else if (name === 'Point fixe') {
+      extra.innerHTML =
+        '<div class="field"><label>g(x) (forme x = g(x))</label><input type="text" id="nl-gx" placeholder="ex : (x**2 + 2) / 3" oninput="this.classList.remove(\'input-error\')"/><span class="field-error-msg" id="nl-gx-err"></span></div>' +
+        '<div class="field"><label>x₀ (point initial)</label><input type="number" id="nl-x0" step="any" placeholder="1" oninput="this.classList.remove(\'input-error\')"/></div>';
+    } else if (name === 'Comparaison des méthodes NL') {
+      extra.innerHTML =
+        '<div class="field"><label>g(x) pour Point fixe</label><input type="text" id="nl-gx" placeholder="ex : (x**2 + 2) / 3" oninput="this.classList.remove(\'input-error\')"/><span class="field-error-msg" id="nl-gx-err"></span></div>' +
+        '<div class="field"><label>x₀ (Newton &amp; Point fixe)</label><input type="number" id="nl-x0" step="any" placeholder="2" oninput="this.classList.remove(\'input-error\')"/></div>';
+    }
+  }
+
+  /* ── Exécuter la méthode NL ─────────────────────────── */
+  function runNL() {
+    if (!validateNLInputs()) return;   // ← validation complète
+    var name = document.getElementById('algo-title').textContent;
+    var fxStr = document.getElementById('nl-fx').value.trim();
+    var a     = parseFloat(document.getElementById('nl-a').value);
+    var b     = parseFloat(document.getElementById('nl-b').value);
+    var eps   = parseFloat(document.getElementById('nl-eps').value) || 1e-4;
+    var f = buildFn(fxStr);
+
+    document.getElementById('nl-results').classList.remove('visible');
+    document.getElementById('nl-table-wrap').style.display = 'none';
+    document.getElementById('nl-conv-wrap').style.display  = 'none';
+
+    if (name === 'Bisection') {
+      var r = jsBisection(f, a, b, eps, 200);
+      afficherNLSingle(name, r, 'bis');
+    } else if (name === 'Newton-Raphson') {
+      var x0 = parseFloat(document.getElementById('nl-x0').value) || (a+b)/2;
+      var r  = jsNewton(f, x0, eps, 200);
+      afficherNLSingle(name, r, 'newton');
+    } else if (name === 'Point fixe') {
+      var gStr = (document.getElementById('nl-gx') || {value:''}).value.trim();
+      if (!gStr) { alert('Entrez g(x)'); return; }
+      var g  = buildFn(gStr);
+      var x0 = parseFloat(document.getElementById('nl-x0').value) || a;
+      var r  = jsPointFixe(g, x0, eps, 200);
+      afficherNLSingle(name, r, 'pf');
+    } else if (name === 'Comparaison des méthodes NL') {
+      var gStr = (document.getElementById('nl-gx') || {value:''}).value.trim();
+      var x0   = parseFloat(document.getElementById('nl-x0').value) || (a+b)/2;
+      var rBis = jsBisection(f, a, b, eps, 200);
+      var rNew = jsNewton(f, x0, eps, 200);
+      var rPF  = gStr ? jsPointFixe(buildFn(gStr), x0, eps, 200) : null;
+      afficherNLComparaison(rBis, rNew, rPF, f, eps);
+    }
+  }
+
+  /* ── Affichage résultat simple ─────────────────────── */
+  function afficherNLSingle(name, r, type) {
+    var grid = document.getElementById('nl-result-grid');
+    grid.style.gridTemplateColumns = '1fr';
+    grid.innerHTML = '';
+
+    var card = document.createElement('div');
+    card.className = 'method-card' + (r.ok ? ' best' : '');
+    if (r.ok) {
+      var fc = isFinite(r.racine) ? r.racine : NaN;
+      card.innerHTML =
+        '<div class="method-card-head"><div class="method-card-name">'+name+'</div>' +
+        '<span class="method-badge badge-best">✓ Convergé</span></div>' +
+        '<div class="method-solution" style="font-size:20px; text-align:center; padding:18px 10px;">' +
+          'Racine ≈ <b>' + fc.toFixed(8) + '</b>' +
+        '</div>' +
+        '<div class="method-stats">' +
+          '<div class="mstat">Itérations <span>' + r.iter + '</span></div>' +
+          (r.rows.length ? '<div class="mstat">Erreur finale <span>' + r.rows[r.rows.length-1].err.toExponential(2) + '</span></div>' : '') +
+          '<div class="mstat">f(racine) <span>' + (isFinite(fc) ? buildFn(document.getElementById('nl-fx').value)(fc).toExponential(3) : '—') + '</span></div>' +
+        '</div>';
+      if (r.warned) card.innerHTML += '<div style="font-size:11px;color:var(--accent2);padding:6px 10px;">⚠ ' + r.warned + '</div>';
+    } else {
+      card.innerHTML =
+        '<div class="method-card-head"><div class="method-card-name">'+name+'</div>' +
+        '<span class="method-badge badge-err">Erreur</span></div>' +
+        '<div class="method-solution" style="color:#c0392b;">' + r.msg + '</div>';
+    }
+    grid.appendChild(card);
+
+    // Tableau
+    if (r.ok && r.rows && r.rows.length) {
+      var cols = type === 'bis'
+        ? ['Iter', 'a', 'b', 'c = (a+b)/2', 'f(c)', 'Erreur']
+        : type === 'newton'
+        ? ['Iter', 'xₙ', 'f(xₙ)', "f'(xₙ)", 'xₙ₊₁', 'Erreur']
+        : ['Iter', 'xₙ', 'g(xₙ)', 'Erreur'];
+      document.getElementById('nl-table-head').innerHTML =
+        '<tr>' + cols.map(c => '<th>'+c+'</th>').join('') + '</tr>';
+      document.getElementById('nl-table-body').innerHTML = r.rows.map(function(row) {
+        if (type === 'bis')
+          return '<tr><td>'+row.iter+'</td><td>'+row.a.toFixed(6)+'</td><td>'+row.b.toFixed(6)+'</td><td>'+row.c.toFixed(6)+'</td><td>'+row.fc.toExponential(3)+'</td><td>'+row.err.toExponential(3)+'</td></tr>';
+        if (type === 'newton')
+          return '<tr><td>'+row.iter+'</td><td>'+row.xn.toFixed(6)+'</td><td>'+row.fx.toExponential(3)+'</td><td>'+row.dfx.toExponential(3)+'</td><td>'+row.xnew.toFixed(6)+'</td><td>'+row.err.toExponential(3)+'</td></tr>';
+        return '<tr><td>'+row.iter+'</td><td>'+row.x.toFixed(6)+'</td><td>'+row.xnew.toFixed(6)+'</td><td>'+row.err.toExponential(3)+'</td></tr>';
+      }).join('');
+      document.getElementById('nl-table-wrap').style.display = 'block';
+
+      // Graphe erreur
+      var errs = r.rows.map(function(rw){ return rw.err; });
+      renderNLConvChart([{ label: name, errs: errs, color: '#2D6A4F' }],
+        parseFloat(document.getElementById('nl-eps').value) || 1e-4);
+    }
+
+    document.getElementById('nl-results').classList.add('visible');
+    document.getElementById('nl-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ── Affichage comparaison 3 méthodes ──────────────── */
+  function afficherNLComparaison(rBis, rNew, rPF, f, eps) {
+    var grid = document.getElementById('nl-result-grid');
+    var methods = [
+      { name:'Dichotomie',      r: rBis, color:'#2D6A4F', ordre:'1' },
+      { name:'Newton-Raphson',  r: rNew, color:'#2B5BA8', ordre:'2' },
+    ];
+    if (rPF) methods.push({ name:'Point Fixe', r: rPF, color:'#B7935A', ordre:'≥1' });
+
+    grid.style.gridTemplateColumns = 'repeat(' + methods.length + ', 1fr)';
+    grid.innerHTML = '';
+
+    var valides  = methods.filter(function(m){ return m.r && m.r.ok; });
+    var bestIter = valides.length ? valides.reduce(function(a,b){ return a.r.iter < b.r.iter ? a : b; }) : null;
+
+    methods.forEach(function(m) {
+      var isBest = bestIter && m.name === bestIter.name && valides.length > 1;
+      var card = document.createElement('div');
+      card.className = 'method-card' + (isBest ? ' best' : '');
+      if (!m.r || !m.r.ok) {
+        card.innerHTML =
+          '<div class="method-card-head">' +
+          '  <div class="method-card-name">' + m.name + '</div>' +
+          '  <span class="method-badge badge-err">✗ Échec</span>' +
+          '</div>' +
+          '<div style="text-align:center; padding:18px 10px;">' +
+          '  <div style="font-size:28px; color:#c0392b; font-weight:700;">✗ <span style="font-size:22px;">Échec</span></div>' +
+          '</div>' +
+          '<div class="method-solution" style="color:#c0392b; font-size:12px;">' + (m.r ? m.r.msg : 'Non exécuté') + '</div>';
+      } else {
+        var errFin = m.r.rows.length ? m.r.rows[m.r.rows.length-1].err : null;
+        card.innerHTML =
+          '<div class="method-card-head">' +
+          '  <div class="method-card-name">' + m.name + '</div>' +
+          (isBest ? '<span class="method-badge badge-best">⭐ Plus rapide</span>' : '') +
+          '</div>' +
+          '<div style="text-align:center; padding:16px 8px 10px;">' +
+          '  <div style="font-family:var(--mono); font-size:26px; font-weight:500; color:var(--text);">' + m.r.racine.toFixed(8) + '</div>' +
+          '  <div style="font-size:12px; color:var(--muted); margin-top:4px;">Racine approchée</div>' +
+          '</div>' +
+          '<div class="method-stats" style="justify-content:center;">' +
+          '  <div class="mstat">' + m.r.iter + ' itérations</div>' +
+          '  <div class="mstat">ordre ' + m.ordre + '</div>' +
+          '</div>';
+      }
+      grid.appendChild(card);
+    });
+
+    // Tableau comparatif
+    var tableHtml = '<div class="section-label" style="margin-top:20px; margin-bottom:12px;">TABLEAU COMPARATIF</div>';
+    tableHtml += '<table class="iter-table" style="margin-bottom:16px;">';
+    tableHtml += '<thead><tr><th>Méthode</th><th>Racine approchée</th><th>Nb. itérations</th><th>Erreur finale</th><th>Ordre</th><th>Statut</th></tr></thead><tbody>';
+    methods.forEach(function(m) {
+      var ok = m.r && m.r.ok;
+      var racineStr = ok ? '<span style="font-family:var(--mono);color:var(--blue);">' + m.r.racine.toFixed(8) + '</span>' : '—';
+      var iterStr   = ok ? '<span style="color:var(--blue);">' + m.r.iter + '</span>' : '<span style="color:#c0392b; font-family:var(--mono);">Non convergé</span>';
+      var errStr    = ok && m.r.rows.length ? m.r.rows[m.r.rows.length-1].err.toExponential(2) : '—';
+      var statut    = ok ? '<span class="method-badge badge-ok">✓ OK</span>' : '<span class="method-badge badge-err">Erreur</span>';
+      tableHtml += '<tr><td>' + m.name + '</td><td>' + racineStr + '</td><td>' + iterStr + '</td><td>' + errStr + '</td><td>' + m.ordre + '</td><td>' + statut + '</td></tr>';
+    });
+    tableHtml += '</tbody></table>';
+
+    // Verdict
+    var verdictHtml = '<div class="section-label" style="margin-bottom:12px;">VERDICT</div>';
+    verdictHtml += '<div class="recommend-box"><p><strong>Analyse automatique</strong></p><ul style="margin-top:8px; list-style:none; padding:0;">';
+    if (bestIter) {
+      verdictHtml += '<li style="margin-bottom:6px;">● <strong>' + bestIter.name + '</strong> est la plus rapide avec <strong>' + bestIter.r.iter + ' itérations</strong>.</li>';
+    }
+    methods.forEach(function(m) {
+      if (!m.r || !m.r.ok) {
+        verdictHtml += '<li style="margin-bottom:6px; color:var(--accent2);">● ' + m.name + ' n\'ont pas convergé — vérifiez les conditions d\'application (signe de f(a)·f(b), dérivée nulle…).</li>';
+      }
+    });
+    var newtonOk = methods.find(function(m){ return m.name === 'Newton-Raphson' && m.r && m.r.ok; });
+    if (newtonOk) {
+      verdictHtml += '<li style="margin-bottom:6px;">● Newton-Raphson (ordre 2) est recommandé pour cette fonction — convergence quadratique confirmée.</li>';
+    }
+    verdictHtml += '</ul></div>';
+
+    // Injecter tout dans le grid (en ajoutant après les cartes)
+    var wrapper = document.createElement('div');
+    wrapper.style.gridColumn = '1 / -1';
+    wrapper.innerHTML = tableHtml + verdictHtml;
+    grid.appendChild(wrapper);
+
+    // Graphe convergence comparatif
+    var series = valides.map(function(m) {
+      return { label: m.name, errs: m.r.rows.map(function(r){ return r.err || r.erreur || 0; }), color: m.color };
+    });
+    renderNLConvChart(series, eps);
+
+    document.getElementById('nl-table-wrap').style.display = 'none';
+    document.getElementById('nl-results').classList.add('visible');
+    document.getElementById('nl-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ── Graphe convergence NL ─────────────────────────── */
+  function renderNLConvChart(series, tol) {
+    var wrap = document.getElementById('nl-conv-wrap');
+    var canvas = document.getElementById('nl-conv-chart');
+    var ctx = canvas.getContext('2d');
+    canvas.width  = wrap.parentElement.offsetWidth || 680;
+    canvas.height = 220;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    var allErrs = series.flatMap(function(s){ return s.errs.filter(function(e){ return e > 0; }); });
+    if (!allErrs.length) { wrap.style.display = 'none'; return; }
+
+    var maxN = Math.max.apply(null, series.map(function(s){ return s.errs.length; }));
+    var minE = Math.min.apply(null, allErrs.concat([tol])) * 0.3;
+    var maxE = Math.max.apply(null, allErrs) * 3;
+
+    var pad = { left:58, right:30, top:20, bottom:40 };
+    var W   = canvas.width - pad.left - pad.right;
+    var H   = canvas.height - pad.top - pad.bottom;
+
+    function xp(k) { return pad.left + (k / maxN) * W; }
+    function yp(e) {
+      if (e <= 0) return pad.top + H;
+      return pad.top + H - (Math.log10(e) - Math.log10(minE)) / (Math.log10(maxE) - Math.log10(minE)) * H;
+    }
+
+    // Grid
+    ctx.strokeStyle = '#E2DFD6'; ctx.lineWidth = 1;
+    for (var i = 0; i <= 5; i++) {
+      var yg = pad.top + (i/5)*H;
+      ctx.beginPath(); ctx.moveTo(pad.left, yg); ctx.lineTo(pad.left+W, yg); ctx.stroke();
+    }
+    // Tolérance
+    ctx.strokeStyle = '#B7935A'; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
+    var yt = yp(tol);
+    ctx.beginPath(); ctx.moveTo(pad.left, yt); ctx.lineTo(pad.left+W, yt); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#B7935A'; ctx.font = '10px DM Mono, monospace';
+    ctx.fillText('ε', pad.left+W+2, yt+3);
+
+    // Séries
+    series.forEach(function(s) {
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2;
+      ctx.beginPath();
+      s.errs.forEach(function(e, k) {
+        if (e <= 0) return;
+        var px = xp(k+1), py = yp(e);
+        k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+    });
+
+    // Axes
+    ctx.fillStyle = '#7A7870'; ctx.font = '11px DM Sans, sans-serif';
+    ctx.fillText('Itération', pad.left + W/2 - 20, canvas.height - 6);
+    ctx.save(); ctx.translate(13, pad.top + H/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Erreur (log)', -28, 0); ctx.restore();
+
+    // Légende
+    series.forEach(function(s, i) {
+      ctx.fillStyle = s.color; ctx.fillRect(pad.left + i*110, 3, 12, 8);
+      ctx.fillStyle = '#1A1916'; ctx.font = '10px DM Sans';
+      ctx.fillText(s.label, pad.left + i*110 + 16, 10);
+    });
+
+    wrap.style.display = 'block';
+  }
+
+  /* ══════════════════════════════════════════════════════
+     RECOMMANDATION
+  ══════════════════════════════════════════════════════ */
+  function runRecommandation() {
+    var derivable  = document.getElementById('reco-derivable').value;
+    var intervalle = document.getElementById('reco-intervalle').value;
+    var precision  = document.getElementById('reco-precision').value;
+    var gx         = document.getElementById('reco-gx').value;
+
+    var content = document.getElementById('reco-result-content');
+
+    // Logique de décision
+    var principale, raison, alts = [], conseils = [];
+
+    if (derivable === 'oui' && precision === 'haute') {
+      principale = 'Newton-Raphson';
+      raison = 'Vous avez une dérivée analytique et cherchez une très haute précision. Newton-Raphson offre une convergence quadratique — le nombre de décimales exactes double à chaque itération.';
+      alts = ['Bisection (si x₀ difficile à choisir)'];
+      conseils = ['Choisissez x₀ proche de la racine', 'Vérifiez f\'(x₀) ≠ 0', 'Contrôlez f\'\'(x) dans [a,b] pour estimer l\'erreur'];
+    } else if (intervalle === 'oui' && (derivable !== 'oui' || precision === 'faible')) {
+      principale = 'Bisection (Dichotomie)';
+      raison = 'Vous avez un intervalle avec changement de signe. La bisection est garantie de converger, robuste et simple, même sans dérivée.';
+      alts = ['Newton-Raphson (plus rapide si f dérivable)'];
+      conseils = ['Vérifiez que f(a)·f(b) < 0', 'La convergence est linéaire : ε ≈ (b-a)/2ⁿ', 'n ≥ log₂((b-a)/ε) itérations suffisent'];
+    } else if (gx === 'oui' && derivable !== 'oui') {
+      principale = 'Point fixe';
+      raison = 'Sans dérivée et sans intervalle de signe garanti, le point fixe x = g(x) est une bonne option si g est contractante sur [a,b].';
+      alts = ['Bisection (si intervalle trouvé)', 'Newton (si dérivée calculable numériquement)'];
+      conseils = ['Vérifiez |g\'(x)| < 1 sur [a,b] (contraction)', 'Vérifiez g([a,b]) ⊂ [a,b] (stabilité)', 'Choisissez x₀ dans [a,b]'];
+    } else if (derivable === 'difficile' || derivable === 'non') {
+      principale = 'Bisection (Dichotomie)';
+      raison = 'Sans dérivée facilement disponible, la bisection est la méthode la plus sûre si vous pouvez trouver un intervalle avec changement de signe.';
+      alts = ['Point fixe (si g(x) constructible)', 'Newton avec dérivée numérique (approximation)'];
+      conseils = ['Utilisez la localisation des racines (module Analyse) pour trouver [a,b]', 'La bisection ne nécessite que l\'évaluation de f'];
+    } else {
+      principale = 'Newton-Raphson';
+      raison = 'Dans la situation générale avec f dérivable et précision intermédiaire, Newton-Raphson offre le meilleur compromis vitesse/précision.';
+      alts = ['Bisection (plus robuste)', 'Point fixe (si g contractante)'];
+      conseils = ['Comparez les trois méthodes via "Comparaison des méthodes"'];
+    }
+
+    var colors = { 'Newton-Raphson': '#2B5BA8', 'Bisection (Dichotomie)': '#2D6A4F', 'Point fixe': '#B7935A' };
+    var color  = colors[principale] || '#2D6A4F';
+
+    content.innerHTML = `
+      <div class="method-card best" style="margin-bottom:16px; border-color:${color}; box-shadow: 0 0 0 2px ${color}22;">
+        <div class="method-card-head">
+          <div class="method-card-name" style="font-size:17px;">✅ ${principale}</div>
+          <span class="method-badge badge-best">Recommandée</span>
+        </div>
+        <div class="method-solution" style="font-size:14px; line-height:1.65; padding:14px 12px;">${raison}</div>
+        <div class="method-stats" style="margin-top:4px;">
+          ${conseils.map(c => '<div class="mstat" style="font-size:11px;">💡 '+c+'</div>').join('')}
+        </div>
+      </div>
+      ${alts.length ? `
+      <div class="section-label" style="margin-bottom:8px;">Alternatives envisageables</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+        ${alts.map(a => '<div class="method-card" style="flex:1; min-width:180px;"><div class="method-card-head"><div class="method-card-name">'+a+'</div></div></div>').join('')}
+      </div>` : ''}
+      <div class="winner-banner">
+        <strong>Rappel des critères de choix :</strong>
+        <br>• <strong>Bisection</strong> : toujours convergente si f(a)·f(b) &lt; 0 · convergence linéaire · ne nécessite pas f'
+        <br>• <strong>Newton-Raphson</strong> : convergence quadratique · nécessite f' · sensible au choix de x₀
+        <br>• <strong>Point fixe</strong> : convergence si |g'| &lt; 1 · flexible · peut diverger
+      </div>`;
+
+    document.getElementById('reco-results').classList.add('visible');
+    document.getElementById('reco-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ══════════════════════════════════════════════════════
+     ANALYSE DE LA FONCTION
+  ══════════════════════════════════════════════════════ */
+  function runAnalyse() {
+    var fxStr = document.getElementById('ana-fx').value.trim();
+    var a     = parseFloat(document.getElementById('ana-a').value);
+    var b     = parseFloat(document.getElementById('ana-b').value);
+    if (!fxStr || isNaN(a) || isNaN(b)) { alert('Remplissez f(x), a et b.'); return; }
+
+    var f  = buildFn(fxStr);
+    var df = function(x) { return derivNumerique(f, x); };
+
+    // Continuité (échantillonnage)
+    var N    = 500;
+    var step = (b - a) / N;
+    var discontinus = [];
+    for (var i = 0; i <= N; i++) {
+      var xi = a + i * step;
+      var yi = f(xi);
+      if (!isFinite(yi)) discontinus.push(xi.toFixed(4));
+    }
+    var continue_ = discontinus.length === 0;
+
+    // TVI
+    var fa = f(a), fb = f(b);
+    var tvi = fa * fb < 0;
+
+    // Localiser racines
+    var racines = [];
+    for (var i = 0; i < N; i++) {
+      var x1 = a + i * step, x2 = a + (i+1) * step;
+      if (f(x1) * f(x2) < 0) racines.push([x1.toFixed(4), x2.toFixed(4)]);
+    }
+
+    // Dérivée symbolique simplifiée (basée sur l'expression)
+    function deriveeSymbolique(expr) {
+      // Dérive les cas simples : x**n, x*n, n*x**m, constante
+      var e = expr.trim();
+      // x**n
+      var m = e.match(/^x\*\*(\d+(?:\.\d+)?)$/);
+      if (m) { var n = parseFloat(m[1]); return n + '*x**' + (n-1); }
+      // n*x**m
+      m = e.match(/^(-?\d+(?:\.\d+)?)\*x\*\*(\d+(?:\.\d+)?)$/);
+      if (m) { var c = parseFloat(m[1]), n = parseFloat(m[2]); return (c*n) + '*x**' + (n-1); }
+      // n*x
+      m = e.match(/^(-?\d+(?:\.\d+)?)\*x$/);
+      if (m) { return m[1]; }
+      // x
+      if (e === 'x') return '1';
+      return null; // pas géré symboliquement
+    }
+
+    // Dérivée première symbolique
+    // Essayer terme par terme (somme/diff de termes simples)
+    function deriveeSymboliqueComplete(expr) {
+      // Séparer en termes (split sur + et - en dehors des parenthèses)
+      var terms = [];
+      var current = '', depth = 0;
+      for (var i = 0; i < expr.length; i++) {
+        var c = expr[i];
+        if (c === '(') depth++;
+        else if (c === ')') depth--;
+        if ((c === '+' || c === '-') && depth === 0 && i > 0) {
+          if (current.trim()) terms.push(current.trim());
+          current = c;
+        } else {
+          current += c;
+        }
+      }
+      if (current.trim()) terms.push(current.trim());
+
+      var derivedTerms = terms.map(function(t) {
+        // supprimer le signe de début pour analyser, remettre après
+        var sign = '';
+        var term = t;
+        if (t[0] === '-') { sign = '-'; term = t.slice(1).trim(); }
+        else if (t[0] === '+') { term = t.slice(1).trim(); }
+        var d = deriveeSymbolique(term);
+        if (d === null) return null;
+        if (d === '0') return null;
+        return sign + d;
+      });
+
+      if (derivedTerms.some(function(t){ return t === null; })) return null;
+      var result = derivedTerms.filter(function(t){ return t !== null; }).join(' + ').replace(/\+ -/g, '- ');
+      return result || '0';
+    }
+
+    var fpSymb   = deriveeSymboliqueComplete(fxStr);
+    // Dérivée seconde (dérivée de la dérivée si possible)
+    var fppSymb  = fpSymb ? deriveeSymboliqueComplete(fpSymb) : null;
+
+    var x_mid   = (a + b) / 2;
+    var df_mid  = derivNumerique(f, x_mid);
+    var ddf_mid = deriv2Numerique(f, x_mid);
+
+    // Montonie
+    var pos = 0, neg = 0;
+    for (var i = 0; i <= N; i++) {
+      var xi2 = a + i * step;
+      var dv = derivNumerique(f, xi2);
+      if (isFinite(dv)) { if (dv > 0) pos++; else if (dv < 0) neg++; }
+    }
+    var monotonieStr = neg === 0 ? '📈 Croissante sur ['+a+', '+b+']'
+                     : pos === 0 ? '📉 Décroissante sur ['+a+', '+b+']'
+                     : '↕ Non monotone (change de sens)';
+
+    var content = document.getElementById('analyse-result-content');
+    content.innerHTML = `
+
+      <!-- Dérivées symboliques -->
+      <div class="section-label" style="margin-bottom:14px;">DÉRIVÉES SYMBOLIQUES</div>
+      <div class="method-result-grid" style="grid-template-columns:1fr 1fr; margin-bottom:16px;">
+        <div class="method-card">
+          <div class="method-card-head">
+            <div class="method-card-name" style="display:flex;align-items:center;gap:8px;">
+              <span style="background:var(--accent-lt);color:var(--accent);border-radius:6px;padding:2px 8px;font-size:12px;font-family:var(--mono);">f'</span>
+              Dérivée première
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">f'(x) =</div>
+          <div class="method-solution" style="font-size:14px;">${fpSymb || ('≈ ' + df_mid.toFixed(6) + ' (numérique en x=' + x_mid.toFixed(4) + ')')}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:6px;">f'(x) simplifié =</div>
+          <div class="method-solution" style="font-size:14px;">${fpSymb || ('≈ ' + df_mid.toFixed(6))}</div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head">
+            <div class="method-card-name" style="display:flex;align-items:center;gap:8px;">
+              <span style="background:var(--accent2-lt);color:var(--accent2);border-radius:6px;padding:2px 8px;font-size:12px;font-family:var(--mono);">f''</span>
+              Dérivée seconde
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">f''(x) =</div>
+          <div class="method-solution" style="font-size:14px;">${fppSymb || ('≈ ' + ddf_mid.toFixed(6) + ' (numérique en x=' + x_mid.toFixed(4) + ')')}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:6px;">f''(x) simplifié =</div>
+          <div class="method-solution" style="font-size:14px;">${fppSymb || ('≈ ' + ddf_mid.toFixed(6))}</div>
+        </div>
+      </div>
+
+      <!-- Continuité + TVI -->
+      <div class="method-result-grid" style="grid-template-columns:1fr 1fr; margin-bottom:16px;">
+        <div class="method-card">
+          <div class="method-card-head">
+            <div class="method-card-name" style="display:flex;align-items:center;gap:8px;">
+              <span style="background:var(--blue-lt);color:var(--blue);border-radius:6px;padding:2px 8px;font-size:12px;font-family:var(--mono);">C</span>
+              Continuité sur [a, b]
+            </div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <span class="method-badge ${continue_ ? 'badge-ok' : 'badge-err'}" style="font-size:12px;padding:4px 12px;">
+              ${continue_ ? '✓ Continue sur [' + a + ', ' + b + ']' : '✗ Discontinuités détectées'}
+            </span>
+          </div>
+          <div style="font-size:13px;color:var(--muted);">
+            ${continue_ ? 'Aucune discontinuité détectée sur l\'intervalle.' : 'Points suspects : ' + discontinus.slice(0,3).join(', ') + (discontinus.length > 3 ? '…' : '')}
+          </div>
+        </div>
+        <div class="method-card">
+          <div class="method-card-head">
+            <div class="method-card-name" style="display:flex;align-items:center;gap:8px;">
+              <span style="background:var(--accent2-lt);color:var(--accent2);border-radius:6px;padding:2px 8px;font-size:12px;font-family:var(--mono);">TVI</span>
+              Théorème des Valeurs Intermédiaires
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;text-align:center;">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:500;">${fa.toFixed(4)}</div>
+              <div style="font-size:11px;color:var(--muted);">f(a)</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;text-align:center;">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:500;">${fb.toFixed(4)}</div>
+              <div style="font-size:11px;color:var(--muted);">f(b)</div>
+            </div>
+          </div>
+          <div>
+            <span class="method-badge ${tvi ? 'badge-best' : 'badge-na'}" style="font-size:12px;padding:4px 12px;">
+              ${tvi ? '✓ Racine garantie' : '— Pas de garantie'}
+            </span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px;">
+            ${tvi ? 'f(a) et f(b) sont de signes opposés. Une racine est garantie dans ['+a+', '+b+'] par le TVI.'
+                  : 'f(a) et f(b) sont du même signe. Une racine peut exister mais n\'est pas garantie par le TVI.'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphes section label -->
+      <div class="method-card" style="margin-bottom:16px;">
+        <div class="method-card-head">
+          <div class="method-card-name">∿ Graphes — f(x), f'(x), f''(x)</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px;">
+          <canvas id="graphe-f-inline"   height="200" style="border:1px solid var(--border);border-radius:var(--r);background:#fff;width:100%;"></canvas>
+          <canvas id="graphe-df-inline"  height="200" style="border:1px solid var(--border);border-radius:var(--r);background:#fff;width:100%;"></canvas>
+          <canvas id="graphe-ddf-inline" height="200" style="border:1px solid var(--border);border-radius:var(--r);background:#fff;width:100%;"></canvas>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px;font-size:11px;color:var(--muted);font-family:var(--mono);text-align:center;">
+          <span>f(x) = ${fxStr}</span>
+          <span>f'(x) = ${fpSymb || "f'(x)"}</span>
+          <span>f''(x) = ${fppSymb || "f''(x)"}</span>
+        </div>
+      </div>
+
+      <!-- Localisation des racines -->
+      <div class="section-label" style="margin-bottom:14px;">LOCALISATION DES RACINES SUR [A, B]</div>
+      <div class="method-card" style="margin-bottom:16px;">
+        ${racines.length === 0
+          ? '<div style="background:var(--accent2-lt);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--accent2);display:inline-block;">Aucune racine localisée sur [' + a + ', ' + b + ']</div>'
+          : racines.map(function(r,i){ return '<div class="mstat" style="display:inline-block;margin:4px;">● Racine '+(i+1)+' dans ['+r[0]+', '+r[1]+']</div>'; }).join('')
+        }
+      </div>
+
+      <!-- Monotonie -->
+      <div class="method-card" style="margin-bottom:16px;">
+        <div class="method-card-head"><div class="method-card-name">Monotonie sur [a, b]</div><span class="method-badge badge-ok">signe f'</span></div>
+        <div style="font-size:14px;padding:6px 0;">${monotonieStr}</div>
+      </div>
+
+      <div class="winner-banner">
+        <strong>Synthèse :</strong>
+        f(x) = ${fxStr} sur [${a}, ${b}] —
+        ${continue_ ? 'continue' : 'avec discontinuités'} —
+        ${tvi ? 'TVI vérifié → bisection applicable' : 'TVI non vérifié → utilisez la localisation'} —
+        ${racines.length} racine(s) localisée(s) par changement de signe.
+      </div>`;
+
+    document.getElementById('analyse-results').classList.add('visible');
+
+    // Dessiner les graphes inline
+    var fns = [
+      { id:'graphe-f-inline',   fn: f,                                              color:'#2B5BA8' },
+      { id:'graphe-df-inline',  fn: function(x){ return derivNumerique(f,x); },     color:'#2D6A4F' },
+      { id:'graphe-ddf-inline', fn: function(x){ return deriv2Numerique(f,x); },    color:'#B7935A' },
+    ];
+    setTimeout(function() {
+      fns.forEach(function(cfg) {
+        var canvas = document.getElementById(cfg.id);
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var NP = 300;
+        canvas.width  = canvas.parentElement.offsetWidth || 220;
+        canvas.height = 200;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        var vals = [];
+        for (var i = 0; i <= NP; i++) {
+          var xi3 = a + (b - a) * i / NP;
+          vals.push(cfg.fn(xi3));
+        }
+        var finite = vals.filter(isFinite);
+        if (!finite.length) return;
+        var minY = Math.min.apply(null, finite), maxY = Math.max.apply(null, finite);
+        var rangeY = maxY - minY || 1;
+        var pad = { l:40, r:10, t:12, b:28 };
+        var W = canvas.width - pad.l - pad.r;
+        var H = canvas.height - pad.t - pad.b;
+
+        function px(i) { return pad.l + (i/NP)*W; }
+        function py(v) { return pad.t + H - ((v - minY) / rangeY) * H; }
+
+        // Grid
+        ctx.strokeStyle = '#E2DFD6'; ctx.lineWidth = 0.5;
+        for (var gi = 0; gi <= 4; gi++) {
+          var gy = pad.t + (gi/4)*H;
+          ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(pad.l+W, gy); ctx.stroke();
+        }
+        // Axes
+        ctx.strokeStyle = '#CCC9BE'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t+H); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad.l, pad.t+H); ctx.lineTo(pad.l+W, pad.t+H); ctx.stroke();
+        // y=0
+        if (minY < 0 && maxY > 0) {
+          var y0 = py(0);
+          ctx.strokeStyle = '#AAA'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+          ctx.beginPath(); ctx.moveTo(pad.l, y0); ctx.lineTo(pad.l+W, y0); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        // Courbe
+        ctx.strokeStyle = cfg.color; ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (var i = 0; i <= NP; i++) {
+          if (!isFinite(vals[i])) continue;
+          i === 0 ? ctx.moveTo(px(i), py(vals[i])) : ctx.lineTo(px(i), py(vals[i]));
+        }
+        ctx.stroke();
+        // Labels
+        ctx.fillStyle = '#7A7870'; ctx.font = '9px DM Mono, monospace';
+        ctx.fillText(minY.toFixed(2), 1, pad.t+H);
+        ctx.fillText(maxY.toFixed(2), 1, pad.t+8);
+        // x axis labels
+        ctx.fillText(a.toFixed(1), pad.l, pad.t+H+12);
+        ctx.fillText(b.toFixed(1), pad.l+W-10, pad.t+H+12);
+        ctx.fillStyle = '#1A1916'; ctx.font = '9px DM Mono, monospace';
+        ctx.fillText('x', pad.l+W/2, pad.t+H+12);
+      });
+    }, 50);
+
+    document.getElementById('analyse-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ── Graphe f, f', f'' sur canvas ──────────────────── */
+  function runAnalyseGraphe() {
+    var fxStr = document.getElementById('ana-fx').value.trim();
+    var a     = parseFloat(document.getElementById('ana-a').value);
+    var b     = parseFloat(document.getElementById('ana-b').value);
+    if (!fxStr || isNaN(a) || isNaN(b)) { alert('Remplissez f(x), a et b.'); return; }
+
+    var f   = buildFn(fxStr);
+    var df  = function(x) { return derivNumerique(f, x); };
+    var ddf = function(x) { return deriv2Numerique(f, x); };
+
+    var N = 300;
+    var xs = [], fs = [], dfs = [], ddfs = [];
+    for (var i = 0; i <= N; i++) {
+      var xi = a + (b-a)*i/N;
+      xs.push(xi);
+      fs.push(f(xi));
+      dfs.push(df(xi));
+      ddfs.push(ddf(xi));
+    }
+
+    var configs = [
+      { id: 'graphe-f',   data: fs,   color: '#2B5BA8', lbl: 'lbl-f',   title: 'f(x) = '+fxStr },
+      { id: 'graphe-df',  data: dfs,  color: '#2D6A4F', lbl: 'lbl-df',  title: "f'(x) — dérivée 1ère" },
+      { id: 'graphe-ddf', data: ddfs, color: '#B7935A', lbl: 'lbl-ddf', title: "f''(x) — dérivée 2ème" },
+    ];
+
+    document.getElementById('analyse-graphe-wrap').style.display = 'block';
+
+    configs.forEach(function(cfg) {
+      document.getElementById(cfg.lbl).textContent = cfg.title;
+      var canvas = document.getElementById(cfg.id);
+      var ctx = canvas.getContext('2d');
+      canvas.width  = canvas.parentElement.offsetWidth || 220;
+      canvas.height = 200;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      var vals = cfg.data.filter(isFinite);
+      if (!vals.length) { ctx.fillStyle='#ccc'; ctx.fillText('N/A', 10,20); return; }
+      var minY = Math.min.apply(null, vals), maxY = Math.max.apply(null, vals);
+      var rangeY = maxY - minY || 1;
+      var pad = { l:38, r:8, t:10, b:24 };
+      var W   = canvas.width - pad.l - pad.r;
+      var H   = canvas.height - pad.t - pad.b;
+
+      function px(i) { return pad.l + (i/N)*W; }
+      function py(v) { return pad.t + H - ((v - minY) / rangeY) * H; }
+
+      // Axes
+      ctx.strokeStyle = '#E2DFD6'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t+H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad.l, pad.t+H); ctx.lineTo(pad.l+W, pad.t+H); ctx.stroke();
+
+      // y=0 line
+      if (minY < 0 && maxY > 0) {
+        var y0 = py(0);
+        ctx.strokeStyle = '#CCC9BE'; ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+        ctx.beginPath(); ctx.moveTo(pad.l, y0); ctx.lineTo(pad.l+W, y0); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Courbe
+      ctx.strokeStyle = cfg.color; ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (var i = 0; i <= N; i++) {
+        if (!isFinite(cfg.data[i])) continue;
+        i === 0 ? ctx.moveTo(px(i), py(cfg.data[i])) : ctx.lineTo(px(i), py(cfg.data[i]));
+      }
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#7A7870'; ctx.font = '9px DM Mono, monospace';
+      ctx.fillText(minY.toFixed(2), 1, pad.t+H);
+      ctx.fillText(maxY.toFixed(2), 1, pad.t+8);
+    });
+
+    document.getElementById('analyse-results').classList.add('visible');
+    document.getElementById('analyse-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ══════════════════════════════════════════════════════
+     OVERRIDE DE goAlgo POUR GÉRER TOUS LES CAS NL
+  ══════════════════════════════════════════════════════ */
+
+
+  function parseSeries(txt) {
+    return txt.split(',').map(function(v){ return parseFloat(v.trim()); }).filter(function(v){ return !isNaN(v); });
+  }
+  function fmt(v) {
+    if (v === null || v === undefined) return '?';
+    if ((Math.abs(v) >= 1e4) || (Math.abs(v) < 1e-4 && v !== 0)) return Number(v).toExponential(3);
+    return Number(v).toFixed(6).replace(/0+$/,'').replace(/\.$/,'');
+  }
+  function drawLineCanvas(canvasId, series) {
+    var canvas = document.getElementById(canvasId); if (!canvas) return;
+    var ctx = canvas.getContext('2d'); canvas.width = canvas.parentElement.offsetWidth || 680; canvas.height = 260;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var allY = []; series.forEach(function(s){ allY = allY.concat(s.y.filter(isFinite)); });
+    if (!allY.length) return;
+    var xs = series[0].x, minX = Math.min.apply(null,xs), maxX = Math.max.apply(null,xs);
+    var minY = Math.min.apply(null,allY), maxY = Math.max.apply(null,allY); if (maxY === minY) { maxY += 1; minY -= 1; }
+    // Reserve top space for legend if any series has a label
+    var hasLabels = series.some(function(s){ return s.label; });
+    var legendH = hasLabels ? 22 : 0;
+    var pad = {l:44,r:14,t:18+legendH,b:34}, W = canvas.width-pad.l-pad.r, H = canvas.height-pad.t-pad.b;
+    function px(x){ return pad.l + (x-minX)/(maxX-minX || 1)*W; }
+    function py(y){ return pad.t + H - (y-minY)/(maxY-minY)*H; }
+    ctx.strokeStyle = '#E2DFD6'; ctx.lineWidth = 1;
+    for (var gi=0; gi<=4; gi++){ var yy=pad.t+gi*H/4; ctx.beginPath(); ctx.moveTo(pad.l,yy); ctx.lineTo(pad.l+W,yy); ctx.stroke(); }
+    var colors = ['#2D6A4F','#B7935A','#2B5BA8','#c0392b'];
+    series.forEach(function(s, idx){
+      ctx.strokeStyle = colors[idx%colors.length]; ctx.lineWidth = 2; ctx.beginPath();
+      s.x.forEach(function(x,i){ var xx=px(x), yy=py(s.y[i]); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); }); ctx.stroke();
+      if (s.points) { ctx.fillStyle = colors[idx%colors.length]; s.points.forEach(function(p){ ctx.beginPath(); ctx.arc(px(p.x),py(p.y),4,0,Math.PI*2); ctx.fill(); }); }
+    });
+    ctx.fillStyle = '#7A7870'; ctx.font = '11px DM Mono, monospace';
+    ctx.fillText(fmt(minX), pad.l, canvas.height-10); ctx.fillText(fmt(maxX), pad.l+W-38, canvas.height-10);
+    ctx.fillText(fmt(maxY), 4, pad.t+8); ctx.fillText(fmt(minY), 4, pad.t+H);
+    // Draw legend
+    if (hasLabels) {
+      var legX = pad.l;
+      series.forEach(function(s, idx){
+        if (!s.label) return;
+        var col = colors[idx%colors.length];
+        ctx.strokeStyle = col; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(legX, 11); ctx.lineTo(legX+18, 11); ctx.stroke();
+        if (s.points) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(legX+9, 11, 4, 0, Math.PI*2); ctx.fill(); }
+        ctx.fillStyle = '#1A1916'; ctx.font = '11px DM Sans, sans-serif';
+        ctx.fillText(s.label, legX+22, 15);
+        legX += ctx.measureText(s.label).width + 48;
+      });
+    }
+  }
+  function axe3Payload() {
+    var ab = (document.getElementById('a3-ab').value || '0,2').split(/[,; ]+/).map(function(v){ return parseFloat(v); }).filter(function(v){ return !isNaN(v); });
+    var approxMode = document.getElementById('a3-approx-mode').value || 'discrete';
+    return { x:document.getElementById('a3-x').value, y:document.getElementById('a3-y').value, degree:parseInt(document.getElementById('a3-degree').value || '1'), mode_approx:approxMode, f_approx:document.getElementById('a3-f-approx').value, a:ab[0] || 0, b:ab[1] || 2, mode:document.getElementById('a3-grad-mode').value, f:document.getElementById('a3-f').value, df:document.getElementById('a3-df').value, dfdx:document.getElementById('a3-dfdx').value, dfdy:document.getElementById('a3-dfdy').value, x0:parseFloat(document.getElementById('a3-x0').value || '5'), y0:parseFloat(document.getElementById('a3-y0').value || '3'), alpha:parseFloat(document.getElementById('a3-alpha').value || '0.1'), eps:parseFloat(document.getElementById('a3-eps').value || '1e-5'), max_iter:parseInt(document.getElementById('a3-max-iter').value || '300') };
+  }
+
+  function updateA3InputMode(name) {
+    var isMoindres = name.indexOf('Moindres') === 0;
+    document.querySelectorAll('.a3-approx-mode-field').forEach(function(el){ el.style.display = isMoindres ? 'flex' : 'none'; });
+    if (isMoindres) updateA3ApproxMode();
+    else {
+      document.querySelectorAll('.a3-points-field').forEach(function(el){ el.style.display = 'flex'; });
+      document.querySelectorAll('.a3-cont-field').forEach(function(el){ el.style.display = 'none'; });
+    }
+  }
+
+  function updateA3ApproxMode() {
+    var mode = document.getElementById('a3-approx-mode').value || 'discrete';
+    document.querySelectorAll('.a3-points-field').forEach(function(el){ el.style.display = (mode === 'discrete' || mode === 'comparison') ? 'flex' : 'none'; });
+    document.querySelectorAll('.a3-cont-field').forEach(function(el){ el.style.display = (mode === 'continuous' || mode === 'comparison') ? 'flex' : 'none'; });
+  }
+
+  function updateA3GradientMode() {
+    var mode = document.getElementById('a3-grad-mode').value;
+    document.querySelectorAll('.a3-1d').forEach(function(el){ el.style.display = (mode === '1d') ? 'flex' : 'none'; });
+    document.querySelectorAll('.a3-2d').forEach(function(el){ el.style.display = (mode === '2d') ? 'flex' : 'none'; });
+    if (mode === '1d') {
+      document.getElementById('a3-f').value = 'x^2+2*x+1';
+      document.getElementById('a3-alpha').value = '0.1';
+      document.getElementById('a3-x0').value = '5';
+    } else {
+      document.getElementById('a3-f').value = 'x^2+2*y^2+x*y+x-y+30';
+      document.getElementById('a3-alpha').value = '0.001';
+      document.getElementById('a3-x0').value = '3';
+      document.getElementById('a3-y0').value = '3';
+    }
+  }
+
+  function renderAxe3Conclusion() {
+    var box = document.getElementById('axe3-result-content');
+    box.innerHTML = `
+      <div class="method-result-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="method-card"><div class="method-card-name">Lagrange</div><p style="font-size:13px;color:var(--muted);">Interpolation polynomiale directe. Elle construit P(x)=somme y_i L_i(x) et passe exactement par les points. Simple a comprendre, mais peu pratique si on ajoute un point.</p></div>
+        <div class="method-card"><div class="method-card-name">Newton</div><p style="font-size:13px;color:var(--muted);">Interpolation avec differences divisees. Elle donne le meme polynome que Lagrange, mais elle est plus avantageuse pour ajouter progressivement des points.</p></div>
+        <div class="method-card"><div class="method-card-name">Moindres carres</div><p style="font-size:13px;color:var(--muted);">Approximation : le polynome ne passe pas forcement par tous les points. Il minimise F = somme (y_i - P(x_i))^2. Utile pour des donnees experimentales ou bruitees.</p></div>
+        <div class="method-card"><div class="method-card-name">Descente de gradient</div><p style="font-size:13px;color:var(--muted);">Optimisation iterative. On avance dans le sens oppose au gradient pour minimiser une fonction. Elle depend du point initial, du pas alpha et du critere d'arret.</p></div>
+      </div>
+      <div class="recommend-box"><p><strong>Synthese :</strong> Lagrange/Newton servent a interpoler exactement, les moindres carres servent a approximer une tendance, et la descente de gradient sert a minimiser une fonction ou une erreur. Il n'existe donc pas un meilleur algorithme unique : le choix depend de l'objectif.</p></div>`;
+    document.getElementById('axe3-results').classList.add('visible');
+  }
+
+  function renderGeneralConclusion() {
+    var box = document.getElementById('axe3-result-content');
+    box.innerHTML = `
+      <div class="method-result-grid" style="grid-template-columns:1fr;">
+        <div class="method-card"><div class="method-card-name">Axe 1 - Racines</div><p style="font-size:13px;color:var(--muted);">Bisection est sure si on a un changement de signe. Newton est plus rapide si la derivee existe et si x0 est bien choisi. Point fixe depend fortement de g et de la condition de convergence.</p></div>
+        <div class="method-card"><div class="method-card-name">Axe 2 - Systemes lineaires</div><p style="font-size:13px;color:var(--muted);">Gauss, LU et Cholesky donnent une solution directe. Jacobi et Gauss-Seidel construisent une suite d'approximations et s'arretent quand l'erreur devient petite.</p></div>
+        <div class="method-card"><div class="method-card-name">Interpolation</div><p style="font-size:13px;color:var(--muted);">Lagrange et Newton donnent le meme polynome interpolateur. Lagrange utilise les bases L_i(x). Newton utilise les differences divisees, surtout utile quand on ajoute des points.</p></div>
+        <div class="method-card"><div class="method-card-name">Approximation</div><p style="font-size:13px;color:var(--muted);">Les moindres carres ne cherchent pas a passer exactement par tous les points ou toute la fonction. Ils cherchent le meilleur polynome au sens d'une erreur quadratique minimale.</p></div>
+      </div>
+      <div class="recommend-box"><p><strong>Conclusion :</strong> Le choix de l'algorithme depend du probleme : trouver une racine, resoudre un systeme, construire un polynome qui passe par les points, ou approcher une tendance/fonction. On ne compare donc pas seulement la vitesse, mais aussi les hypotheses, les entrees demandees et le type de resultat obtenu.</p></div>`;
+    document.getElementById('axe3-results').classList.add('visible');
+  }
+
+  async function runAxe3() {
+    if (window.location.protocol === 'file:') {
+      alert("L'execution de l'Axe 3 utilise Flask. Lancez python app.py puis ouvrez http://127.0.0.1:5000/ au lieu du fichier HTML.");
+      return;
+    }
+    var endpoint = '/api/axe3_interpolation';
+    if (currentAlgoName.indexOf('Moindres') === 0) endpoint = '/api/axe3_approximation';
+    if (currentAlgoName === 'Descente de gradient') endpoint = '/api/axe3_gradient';
+    if (currentAlgoName === 'Comparaison Lagrange / Newton') endpoint = '/api/axe3_interpolation';
+    if (currentAlgoName === 'Comparaison interpolation / approximation') endpoint = '/api/axe3_interp_approx';
+    if (currentAlgoName === 'Conclusion Axe 3') endpoint = '/api/axe3_comparaison';
+    var res = await fetch(endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(axe3Payload())});
+    var data = await res.json(); if (!res.ok) { alert(data.error || 'Erreur Axe 3'); return; }
+    renderAxe3(data);
+  }
+  function renderAxe3(data) {
+    var box = document.getElementById('axe3-result-content');
+    if (currentAlgoName.indexOf('Interpolation') === 0 || currentAlgoName === 'Comparaison Lagrange / Newton') {
+      var tableHtml = '';
+      if (currentAlgoName !== 'Interpolation de Lagrange') {
+        tableHtml = '<div class="method-card" style="margin-top:14px;"><div class="method-card-name">Table des differences divisees</div><div style="overflow-x:auto;margin-top:10px;"><table class="iter-table"><tbody>'+data.table.map(function(r){return '<tr>'+r.map(function(v){return '<td>'+fmt(v)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div></div>';
+      }
+      var reco = currentAlgoName === 'Interpolation de Lagrange'
+        ? 'Lagrange construit le polynome avec les bases L_i(x). Les differences divisees appartiennent a la forme de Newton.'
+        : data.recommendation;
+      box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+data.degree+'</div><div class="ml">Degre</div></div><div class="metric info"><div class="mv">'+data.points.length+'</div><div class="ml">Points</div></div><div class="metric"><div class="mv">'+fmt(data.ecart_max)+'</div><div class="ml">Ecart max</div></div></div><div class="method-card"><div class="method-card-name">Polynome interpolateur</div><div class="method-solution">'+data.polynomial+'</div></div>'+tableHtml+'<div class="method-card" style="margin-top:14px;"><canvas id="axe3-chart" height="260"></canvas></div><div class="recommend-box"><p><strong>Recommandation :</strong> '+reco+'</p></div>';
+      drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.lagrange,points:data.points},{x:data.curve.x,y:data.curve.newton}]);
+    } else if (currentAlgoName.indexOf('Moindres') === 0) {
+      if (data.mode === 'comparison') {
+        box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+data.degree+'</div><div class="ml">Degre s</div></div><div class="metric info"><div class="mv">'+fmt(data.discrete.error_points)+'</div><div class="ml">Erreur discrete</div></div><div class="metric"><div class="mv">'+fmt(data.continuous.error_integral)+'</div><div class="ml">Erreur continue</div></div></div><div class="method-result-grid" style="grid-template-columns:repeat(2,1fr);"><div class="method-card"><div class="method-card-name">Cas discret</div><div class="method-solution">'+data.discrete.polynomial+'</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">Minimise la somme des carres sur les points X,Y.</p></div><div class="method-card"><div class="method-card-name">Cas continu</div><div class="method-solution">'+data.continuous.polynomial+'</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">Minimise l integrale de (f(x)-P(x))^2 sur ['+fmt(data.interval[0])+', '+fmt(data.interval[1])+'].</p></div></div><div class="method-card" style="margin-top:14px;"><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><div class="method-card-name">Comparaison des erreurs</div><table class="iter-table"><thead><tr><th>Polynome</th><th>Erreur sur points</th><th>Erreur integrale</th></tr></thead><tbody><tr><td>Discret</td><td>'+fmt(data.discrete.error_points)+'</td><td>'+fmt(data.discrete.error_integral)+'</td></tr><tr><td>Continu</td><td>'+fmt(data.continuous.error_points)+'</td><td>'+fmt(data.continuous.error_integral)+'</td></tr></tbody></table></div><div class="recommend-box"><p><strong>Conclusion :</strong> '+data.recommendation+'</p></div>';
+        drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.f,points:data.points,label:'f(x) / Points'},{x:data.curve.x,y:data.curve.discrete,label:'Discret'},{x:data.curve.x,y:data.curve.continuous,label:'Continu'}]);
+      } else if (data.mode === 'continuous') {
+        box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+data.degree+'</div><div class="ml">Degre s</div></div><div class="metric info"><div class="mv">'+fmt(data.error)+'</div><div class="ml">Integrale erreur</div></div><div class="metric"><div class="mv">['+fmt(data.interval[0])+', '+fmt(data.interval[1])+']</div><div class="ml">Intervalle</div></div></div><div class="method-card"><div class="method-card-name">Polynome des moindres carres</div><div class="method-solution">'+data.polynomial+'</div></div><div class="method-card" style="margin-top:14px;"><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><div class="method-card-name">Systeme normal continu</div><div style="overflow-x:auto;margin-top:10px;"><table class="iter-table"><tbody>'+data.A.map(function(r,i){return '<tr>'+r.map(function(v){return '<td>'+fmt(v)+'</td>';}).join('')+'<td>|</td><td>'+fmt(data.B[i])+'</td></tr>';}).join('')+'</tbody></table></div></div><div class="recommend-box"><p><strong>Recommandation :</strong> '+data.recommendation+'</p></div>';
+        drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.f,label:'f(x)'},{x:data.curve.x,y:data.curve.y,label:'P(x) approx'}]);
+      } else {
+        box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+data.degree+'</div><div class="ml">Degre s</div></div><div class="metric info"><div class="mv">'+fmt(data.error)+'</div><div class="ml">Erreur F</div></div><div class="metric"><div class="mv">'+(data.best ? data.best.degree : '?')+'</div><div class="ml">Meilleur degre</div></div></div><div class="method-card"><div class="method-card-name">'+data.polynomial+'</div></div><div class="method-card" style="margin-top:14px;"><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><div class="method-card-name">Comparaison des degres</div><table class="iter-table"><thead><tr><th>Degre</th><th>Erreur F</th><th>Polynome</th></tr></thead><tbody>'+data.comparisons.map(function(r){return '<tr><td>'+r.degree+'</td><td>'+fmt(r.error)+'</td><td>'+r.poly+'</td></tr>';}).join('')+'</tbody></table></div><div class="recommend-box"><p><strong>Recommandation :</strong> '+data.recommendation+'</p></div>';
+        var xs = parseSeries(document.getElementById('a3-x').value), ys = parseSeries(document.getElementById('a3-y').value); var pts = xs.map(function(x,i){return {x:x,y:ys[i]};});
+        drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.y,points:pts,label:'P(x) approx'}]);
+      }
+    } else if (currentAlgoName === 'Comparaison interpolation / approximation') {
+      box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+data.degree_interpolation+'</div><div class="ml">Degre interpolation</div></div><div class="metric info"><div class="mv">'+data.degree_approximation+'</div><div class="ml">Degre approximation</div></div><div class="metric"><div class="mv">'+fmt(data.approximation_error)+'</div><div class="ml">Erreur approximation F</div></div></div><div class="method-result-grid" style="grid-template-columns:repeat(2,1fr);"><div class="method-card"><div class="method-card-name">Polynome interpolateur</div><div class="method-solution">'+data.interp_polynomial+'</div></div><div class="method-card"><div class="method-card-name">Polynome des moindres carres</div><div class="method-solution">'+data.approx_polynomial+'</div></div></div><div class="method-card" style="margin-top:14px;"><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><div class="method-card-name">Erreurs aux points</div><table class="iter-table"><thead><tr><th>x</th><th>y</th><th>Interpolation</th><th>Approximation</th><th>Err. approx</th></tr></thead><tbody>'+data.rows.map(function(r){return '<tr><td>'+fmt(r.x)+'</td><td>'+fmt(r.y)+'</td><td>'+fmt(r.interpolation)+'</td><td>'+fmt(r.approximation)+'</td><td>'+fmt(r.err_approx)+'</td></tr>';}).join('')+'</tbody></table></div><div class="recommend-box"><p><strong>Conclusion :</strong> '+data.recommendation+'</p></div>';
+      drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.interpolation,points:data.points,label:'Interpolation'},{x:data.curve.x,y:data.curve.approximation,label:'Moindres carrés'}]);
+     } else if (currentAlgoName === 'Descente de gradient') {
+      if (data.mode === '2d') {
+        box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">('+fmt(data.x_star)+', '+fmt(data.y_star)+')</div><div class="ml">(x*, y*)</div></div><div class="metric info"><div class="mv">'+fmt(data.f_star)+'</div><div class="ml">f(x*,y*)</div></div><div class="metric"><div class="mv">'+data.iterations+'</div><div class="ml">Iterations</div></div></div><div class="method-card" style="margin-top:14px;"><div class="method-card-name" style="font-size:12px;margin-bottom:4px;">Convergence</div><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><table class="iter-table"><thead><tr><th>k</th><th>x</th><th>y</th><th>f(x,y)</th><th>|grad|</th><th>erreur</th></tr></thead><tbody>'+data.rows.slice(0,40).map(function(r){return '<tr><td>'+r.iter+'</td><td>'+fmt(r.x)+'</td><td>'+fmt(r.y)+'</td><td>'+fmt(r.fx)+'</td><td>'+fmt(r.grad_norm)+'</td><td>'+fmt(r.err)+'</td></tr>';}).join('')+'</tbody></table></div><div class="recommend-box"><p><strong>Recommandation :</strong> '+data.recommendation+'</p></div>';
+        var iters = data.trajectory.z.map(function(_,i){ return i; });
+        function normalize(arr) {
+          var mn = Math.min.apply(null,arr), mx = Math.max.apply(null,arr), r = mx-mn || 1;
+          return arr.map(function(v){ return (v-mn)/r; });
+        }
+        drawLineCanvas('axe3-chart', [
+          {x:iters, y:normalize(data.trajectory.z), label:'f(x,y)'},
+          {x:iters, y:normalize(data.trajectory.x), label:'x(k)'},
+          {x:iters, y:normalize(data.trajectory.y), label:'y(k)'}
+        ]);
+      } else {
+        box.innerHTML = '<div class="metrics"><div class="metric good"><div class="mv">'+fmt(data.x_star)+'</div><div class="ml">x*</div></div><div class="metric info"><div class="mv">'+fmt(data.f_star)+'</div><div class="ml">f(x*)</div></div><div class="metric"><div class="mv">'+data.iterations+'</div><div class="ml">Iterations</div></div></div><div class="method-card"><canvas id="axe3-chart" height="260"></canvas></div><div class="method-card" style="margin-top:14px;"><table class="iter-table"><thead><tr><th>k</th><th>x</th><th>f(x)</th><th>f\'(x)</th><th>erreur</th></tr></thead><tbody>'+data.rows.slice(0,40).map(function(r){return '<tr><td>'+r.iter+'</td><td>'+fmt(r.x)+'</td><td>'+fmt(r.fx)+'</td><td>'+fmt(r.grad)+'</td><td>'+fmt(r.err)+'</td></tr>';}).join('')+'</tbody></table></div><div class="recommend-box"><p><strong>Recommandation :</strong> '+data.recommendation+'</p></div>';
+        var pts = data.curve.hx.map(function(x,i){return {x:x,y:data.curve.hy[i]};}); drawLineCanvas('axe3-chart', [{x:data.curve.x,y:data.curve.y,points:pts}]);
+      }
+    } else {
+      box.innerHTML = '<div class="method-result-grid" style="grid-template-columns:repeat(3,1fr);">'+data.items.map(function(it){return '<div class="method-card"><div class="method-card-name">'+it.name+'</div><div class="method-solution">'+it.criterion+'<br>'+(it.value===null?'':'Valeur : '+fmt(it.value))+'</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">'+it.advice+'</p></div>';}).join('')+'</div><div class="recommend-box"><p><strong>Conclusion :</strong> '+data.recommendation+'</p></div>';
+    }
+    document.getElementById('axe3-results').classList.add('visible');
+    document.getElementById('axe3-results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function _hideAllPanels() {
+    document.getElementById('input-section-label').style.display = 'block';
+    ['std-input-card','matrix-input-card','iter-input-card','autre-input-card',
+     'nl-input-card','reco-input-card','analyse-input-card','axe3-input-card'].forEach(function(id){
+      document.getElementById(id).style.display = 'none';
+    });
+    ['direct-results','iter-results','autre-results','nl-results','reco-results','analyse-results','axe3-results'].forEach(function(id){
+      document.getElementById(id).classList.remove('visible');
+    });
+    ['matrix-input-area','matrix-input-area-iter','matrix-input-area-autre'].forEach(function(id){
+      document.getElementById(id).classList.remove('visible');
+    });
+    document.getElementById('winner-banner').style.display = 'none';
+    document.getElementById('iter-winner-banner').style.display = 'none';
+    document.getElementById('iter-table-wrap').style.display = 'none';
+    document.getElementById('result-card').classList.remove('visible');
+    document.getElementById('result-card').style.display = 'none';
+  }
+
+  // Stocker l'ancien goAlgo et le remplacer
+  var _goAlgoOrig = goAlgo;
+  goAlgo = function(name, axe, desc, type) {
+    document.getElementById('algo-title').textContent = name;
+    document.getElementById('algo-desc').textContent  = desc;
+    document.getElementById('algo-breadcrumb').textContent = 'Menu › ' + axe + ' › ' + name;
+    document.getElementById('recommend-text').innerHTML =
+      '<strong>Recommandation :</strong> ' + (recommendations[name] || 'Voir le cours.');
+    currentAlgoAxe  = axe;
+    currentAlgoType = type || 'standard';
+    currentAlgoName = name;
+
+    _hideAllPanels();
+
+    if (isDirectMethod(name)) {
+      document.getElementById('matrix-input-card').style.display = 'block';
+    } else if (isIterMethod(name)) {
+      document.getElementById('iter-input-card').style.display = 'block';
+    } else if (isAutreMethod(name)) {
+      document.getElementById('autre-input-card').style.display = 'block';
+    } else if (name === 'Recommandation') {
+      document.getElementById('reco-input-card').style.display = 'block';
+    } else if (name === 'Analyse de la fonction') {
+      document.getElementById('analyse-input-card').style.display = 'block';
+    } else if ((['Bisection','Newton-Raphson','Point fixe'].includes(name) || name.indexOf('Comparaison des') === 0)) {
+      document.getElementById('nl-input-card').style.display = 'block';
+      updateNLExtra(name);
+    } else if (axe === 'A4') {
+      document.getElementById('input-section-label').style.display = 'none';
+      renderGeneralConclusion();
+    } else if (axe === 'A3') {
+      if (name === 'Conclusion Axe 3') {
+        renderAxe3Conclusion();
+      } else {
+        document.getElementById('axe3-input-card').style.display = 'block';
+        updateA3InputMode(name);
+        document.getElementById('a3-gradient-fields').style.display = (name === 'Descente de gradient') ? 'block' : 'none';
+        if (name === 'Descente de gradient') updateA3GradientMode();
+      }
+    } else {
+      document.getElementById('std-input-card').style.display = 'block';
+      document.getElementById('result-card').style.display = '';
+    }
+
+    switchTab(0);
+    goTo('p-algo');
+  };
+
+  function switchTab(i) {
+    document.querySelectorAll('.rtab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+    document.querySelectorAll('.tab-panel').forEach((p, idx) => p.classList.toggle('active', idx === i));
+  }
+</script>
+</body>
+</html>
